@@ -1,0 +1,31 @@
+
+query LibraryCategoryManga($categoryId: Int!) {
+  category(id: $categoryId) {
+    id
+    name
+    mangas {
+      nodes {
+        id
+        title
+        description
+        thumbnailUrl
+        author
+        artist
+        status
+        url
+        realUrl
+        age
+        genre
+
+        source {
+          id
+          displayName
+        }
+      }
+      totalCount
+      pageInfo {
+        hasNextPage
+      }
+    }
+  }
+}

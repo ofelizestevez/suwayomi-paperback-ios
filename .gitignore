@@ -1,0 +1,29 @@
+
+# Dependencies
+/node_modules/
+
+# Paperback / TypeScript build output
+/bundles/
+/dist/
+/build/
+/lib/
+*.tsbuildinfo
+
+# GraphQL Codegen output
+/src/Suwayomi/api/generated/
+
+# Local environment and secrets
+.env*
+!.env.example
+
+# Logs, caches, and test artifacts
+*.log
+/.cache/
+/tmp/
+/coverage/
+
+# Local editor and operating-system files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

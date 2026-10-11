@@ -1,0 +1,12 @@
+query LibraryCategories {
+  categories(
+    order: [{ by: ORDER, byType: ASC }]
+  ) {
+    nodes {
+      id
+      name
+      order
+      isDefaultCategory
+    }
+  }
+}
