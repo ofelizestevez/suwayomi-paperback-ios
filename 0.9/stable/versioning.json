@@ -1,0 +1,41 @@
+{
+  "buildTime": "2026-10-11T19:14:49.864Z",
+  "builtWith": {
+    "toolchain": "1.0.0-alpha.92",
+    "types": "1.0.0-alpha.92"
+  },
+  "repository": {
+    "name": "suwayomi-paperback",
+    "description": ""
+  },
+  "sources": [
+    {
+      "name": "suwayomi",
+      "description": "Connect to your self-hosted Suwayomi server to browse manga, access your library, and read chapters directly in Paperback.",
+      "version": "0.0.1",
+      "icon": "icon.png",
+      "language": "en",
+      "contentRating": "SAFE",
+      "developers": [
+        {
+          "name": "Oscar Feliz",
+          "github": "https://github.com/ofelizestevez"
+        }
+      ],
+      "badges": [
+        {
+          "label": "Self Hosted",
+          "backgroundColor": "#000000",
+          "textColor": "#ffffff"
+        }
+      ],
+      "capabilities": [
+        32,
+        8,
+        2,
+        1
+      ],
+      "id": "Suwayomi"
+    }
+  ]
+}
