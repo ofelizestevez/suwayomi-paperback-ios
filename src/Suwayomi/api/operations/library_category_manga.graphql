@@ -1,4 +1,3 @@
-
 query LibraryCategoryManga($categoryId: Int!) {
   category(id: $categoryId) {
     id

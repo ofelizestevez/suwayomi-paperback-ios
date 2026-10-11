@@ -9,8 +9,6 @@
 /lib/
 *.tsbuildinfo
 
-# GraphQL Codegen output
-/src/Suwayomi/api/generated/
 
 # Local environment and secrets
 .env*

@@ -100,5 +100,4 @@ export class serverConnectionForm extends Form {
 
     this.reloadForm()
   }
-    
 }

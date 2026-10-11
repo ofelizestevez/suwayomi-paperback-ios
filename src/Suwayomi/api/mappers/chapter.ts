@@ -1,4 +1,3 @@
-
 import type { Chapter, SourceManga } from '@paperback/types'
 import type { MangaChaptersMutation } from '../generated/graphql.js'
 
