@@ -1,0 +1,57 @@
+# Example for a Linux Docker host with /dev/net/tun support.
+# See README.md for the Tailscale admin setup required before starting.
+services:
+  tailscale:
+    image: tailscale/tailscale:v1.102.4
+    hostname: suwayomi-tailnet
+    network_mode: host
+    environment:
+      TS_AUTHKEY: ${TS_AUTHKEY:?Set TS_AUTHKEY in .env}
+      TS_STATE_DIR: /var/lib/tailscale
+      TS_SOCKET: /var/run/tailscale/tailscaled.sock
+      TS_USERSPACE: "false"
+      TS_EXTRA_ARGS: "--advertise-tags=tag:server"
+    volumes:
+      - tailscale-state:/var/lib/tailscale
+      - tailscale-socket:/var/run/tailscale
+      - /dev/net/tun:/dev/net/tun
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    healthcheck:
+      test: ["CMD", "test", "-S", "/var/run/tailscale/tailscaled.sock"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+    restart: unless-stopped
+
+  docktail:
+    image: ghcr.io/marvinvr/docktail:1.8.3
+    depends_on:
+      tailscale:
+        condition: service_healthy
+    environment:
+      TAILSCALE_OAUTH_CLIENT_ID: ${TAILSCALE_OAUTH_CLIENT_ID:?Set TAILSCALE_OAUTH_CLIENT_ID in .env}
+      TAILSCALE_OAUTH_CLIENT_SECRET: ${TAILSCALE_OAUTH_CLIENT_SECRET:?Set TAILSCALE_OAUTH_CLIENT_SECRET in .env}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - tailscale-socket:/var/run/tailscale
+    restart: unless-stopped
+
+  suwayomi:
+    image: ghcr.io/suwayomi/suwayomi-server:v2.4.2422
+    user: "${PUID:-1000}:${PGID:-1000}"
+    environment:
+      TZ: ${TZ:-UTC}
+    volumes:
+      - ./suwayomi-data:/home/suwayomi/.local/share/Tachidesk
+    labels:
+      - "docktail.service.enable=true"
+      - "docktail.service.name=manga"
+      - "docktail.service.port=4567"
+      - "docktail.service.service-protocol=https"
+    restart: unless-stopped
+
+volumes:
+  tailscale-state:
+  tailscale-socket:

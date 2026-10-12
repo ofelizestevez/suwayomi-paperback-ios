@@ -9,7 +9,6 @@
 /lib/
 *.tsbuildinfo
 
-
 # Local environment and secrets
 .env*
 !.env.example
