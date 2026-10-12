@@ -1,0 +1,8 @@
+query SourceLanguages {
+	sources {
+		nodes {
+			id
+			lang
+		}
+	}
+}

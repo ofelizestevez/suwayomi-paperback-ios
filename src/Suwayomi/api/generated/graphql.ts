@@ -65,6 +65,11 @@ export type ServerVersionQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type ServerVersionQuery = { aboutServer: { name: string, version: string } };
 
+export type SourceLanguagesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type SourceLanguagesQuery = { sources: { nodes: Array<{ id: string, lang: string }> } };
+
 export class TypedDocumentString<TResult, TVariables>
   extends String
   implements DocumentTypeDecoration<TResult, TVariables>
@@ -222,3 +227,13 @@ export const ServerVersionDocument = new TypedDocumentString(`
   }
 }
     `) as unknown as TypedDocumentString<ServerVersionQuery, ServerVersionQueryVariables>;
+export const SourceLanguagesDocument = new TypedDocumentString(`
+    query SourceLanguages {
+  sources {
+    nodes {
+      id
+      lang
+    }
+  }
+}
+    `) as unknown as TypedDocumentString<SourceLanguagesQuery, SourceLanguagesQueryVariables>;

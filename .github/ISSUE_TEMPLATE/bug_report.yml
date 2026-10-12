@@ -1,62 +1,62 @@
 name: Bug Report
 description: Report a problem with Suwayomi for Paperback.
-title: "[Bug]: "
+title: '[Bug]: '
 labels:
-  - bug
+    - bug
 body:
-  - type: dropdown
-    id: affected-area
-    attributes:
-      label: Affected Area
-      description: Which part of the extension is affected?
-      options:
-        - Server Connection / Settings
-        - Library / Collections
-        - Chapters / Reader
-        - Reading Progress / Sync
-        - Search / Discover
-        - Other / Unsure
+    - type: dropdown
+      id: affected-area
+      attributes:
+          label: Affected Area
+          description: Which part of the extension is affected?
+          options:
+              - Server Connection / Settings
+              - Library / Collections
+              - Chapters / Reader
+              - Reading Progress / Sync
+              - Search / Discover
+              - Other / Unsure
 
-  - type: textarea
-    id: description
-    attributes:
-      label: What happened?
-      description: Describe the problem, including any error messages.
-      placeholder: "Example: Opening a chapter shows a blank page, although the chapter loads in Suwayomi-WebUI."
-    validations:
-      required: true
+    - type: textarea
+      id: description
+      attributes:
+          label: What happened?
+          description: Describe the problem, including any error messages.
+          placeholder: 'Example: Opening a chapter shows a blank page, although the chapter loads in Suwayomi-WebUI.'
+      validations:
+          required: true
 
-  - type: textarea
-    id: reproduction
-    attributes:
-      label: Steps to Reproduce
-      description: What were you doing when the issue occurred? Steps are helpful, even if the bug is intermittent.
-      placeholder: |
-        1. Open ...
-        2. Select ...
-        3. Observe ...
+    - type: textarea
+      id: reproduction
+      attributes:
+          label: Steps to Reproduce
+          description: What were you doing when the issue occurred? Steps are helpful, even if the bug is intermittent.
+          placeholder: |
+              1. Open ...
+              2. Select ...
+              3. Observe ...
 
-  - type: textarea
-    id: expected
-    attributes:
-      label: Expected Behavior
-      description: What did you expect to happen instead?
+    - type: textarea
+      id: expected
+      attributes:
+          label: Expected Behavior
+          description: What did you expect to happen instead?
 
-  - type: textarea
-    id: environment
-    attributes:
-      label: Environment
-      description: Include whichever details you know; leave the rest blank.
-      placeholder: |
-        Paperback version:
-        Extension version / branch:
-        Suwayomi version:
-        iOS version:
-        Connection: LAN HTTP / HTTPS / Tailscale / Other
+    - type: textarea
+      id: environment
+      attributes:
+          label: Environment
+          description: Include whichever details you know; leave the rest blank.
+          placeholder: |
+              Paperback version:
+              Extension version / branch:
+              Suwayomi version:
+              iOS version:
+              Connection: LAN HTTP / HTTPS / Tailscale / Other
 
-  - type: textarea
-    id: additional-context
-    attributes:
-      label: Logs, Screenshots, or Additional Context
-      description: Paste relevant error logs or attach screenshots. Redact sensitive information first.
-      placeholder: "Any details that could help reproduce or troubleshoot the issue."
+    - type: textarea
+      id: additional-context
+      attributes:
+          label: Logs, Screenshots, or Additional Context
+          description: Paste relevant error logs or attach screenshots. Redact sensitive information first.
+          placeholder: 'Any details that could help reproduce or troubleshoot the issue.'

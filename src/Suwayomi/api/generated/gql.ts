@@ -23,6 +23,7 @@ type Documents = {
     "query MangaProgress($mangaId: Int!) {\n  manga(id: $mangaId) {\n    source {\n      lang\n    }\n    lastReadChapter {\n      id\n      mangaId\n      name\n      chapterNumber\n      sourceOrder\n      uploadDate\n      scanlator\n      isRead\n      lastReadAt\n    }\n  }\n}": typeof types.MangaProgressDocument,
     "mutation MarkChapterRead($chapterId: Int!) {\n  updateChapter(input: {id: $chapterId, patch: {isRead: true}}) {\n    chapter {\n      id\n      mangaId\n      isRead\n    }\n  }\n}": typeof types.MarkChapterReadDocument,
     "query ServerVersion {\n  aboutServer {\n    name\n    version\n  }\n}": typeof types.ServerVersionDocument,
+    "query SourceLanguages {\n  sources {\n    nodes {\n      id\n      lang\n    }\n  }\n}": typeof types.SourceLanguagesDocument,
 };
 const documents: Documents = {
     "mutation ChapterPages($chapterId: Int!) {\n  fetchChapterPages(input: {chapterId: $chapterId}) {\n    chapter {\n      id\n      mangaId\n      sourceOrder\n      pageCount\n    }\n    pages\n  }\n}": types.ChapterPagesDocument,
@@ -33,6 +34,7 @@ const documents: Documents = {
     "query MangaProgress($mangaId: Int!) {\n  manga(id: $mangaId) {\n    source {\n      lang\n    }\n    lastReadChapter {\n      id\n      mangaId\n      name\n      chapterNumber\n      sourceOrder\n      uploadDate\n      scanlator\n      isRead\n      lastReadAt\n    }\n  }\n}": types.MangaProgressDocument,
     "mutation MarkChapterRead($chapterId: Int!) {\n  updateChapter(input: {id: $chapterId, patch: {isRead: true}}) {\n    chapter {\n      id\n      mangaId\n      isRead\n    }\n  }\n}": types.MarkChapterReadDocument,
     "query ServerVersion {\n  aboutServer {\n    name\n    version\n  }\n}": types.ServerVersionDocument,
+    "query SourceLanguages {\n  sources {\n    nodes {\n      id\n      lang\n    }\n  }\n}": types.SourceLanguagesDocument,
 };
 
 /**
@@ -67,6 +69,10 @@ export function graphql(source: "mutation MarkChapterRead($chapterId: Int!) {\n 
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "query ServerVersion {\n  aboutServer {\n    name\n    version\n  }\n}"): typeof import('./graphql').ServerVersionDocument;
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "query SourceLanguages {\n  sources {\n    nodes {\n      id\n      lang\n    }\n  }\n}"): typeof import('./graphql').SourceLanguagesDocument;
 
 
 export function graphql(source: string) {
