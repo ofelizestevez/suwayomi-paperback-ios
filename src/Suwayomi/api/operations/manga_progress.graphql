@@ -1,18 +1,18 @@
 query MangaProgress($mangaId: Int!) {
-  manga(id: $mangaId) {
-    source {
-      lang
-    }
-    lastReadChapter {
-      id
-      mangaId
-      name
-      chapterNumber
-      sourceOrder
-      uploadDate
-      scanlator
-        isRead
-        lastReadAt
-    }
-  }
+	manga(id: $mangaId) {
+		source {
+			lang
+		}
+		lastReadChapter {
+			id
+			mangaId
+			name
+			chapterNumber
+			sourceOrder
+			uploadDate
+			scanlator
+			isRead
+			lastReadAt
+		}
+	}
 }

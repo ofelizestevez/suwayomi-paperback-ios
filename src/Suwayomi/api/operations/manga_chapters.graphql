@@ -1,24 +1,18 @@
 mutation MangaChapters($mangaId: Int!) {
-  fetchMangaAndChapters(
-    input: {
-      id: $mangaId
-      fetchManga: false
-      fetchChapters: true
-    }
-  ) {
-    chapters {
-      id
-      mangaId
-      name
-      chapterNumber
-      sourceOrder
-      uploadDate
-      scanlator
-    }
-    manga {
-      source {
-        lang
-      }
-    }
-  }
+	fetchMangaAndChapters(input: { id: $mangaId, fetchManga: false, fetchChapters: true }) {
+		chapters {
+			id
+			mangaId
+			name
+			chapterNumber
+			sourceOrder
+			uploadDate
+			scanlator
+		}
+		manga {
+			source {
+				lang
+			}
+		}
+	}
 }

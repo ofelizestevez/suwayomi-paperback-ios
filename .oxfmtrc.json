@@ -1,0 +1,17 @@
+{
+	"$schema": "./node_modules/oxfmt/configuration_schema.json",
+	"sortImports": true,
+	"singleQuote": true,
+	"printWidth": 100,
+	"tabWidth": 4,
+	"useTabs": true,
+	"trailingComma": "all",
+	"sortPackageJson": false,
+	"ignorePatterns": [
+		"src/Suwayomi/api/generated/**",
+		"bundles/**",
+		"dist/**",
+		"coverage/**",
+		"package-lock.json"
+	]
+}

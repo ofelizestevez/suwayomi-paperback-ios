@@ -1,41 +1,55 @@
 {
-  "name": "suwayomi-paperback",
-  "version": "1.0.0",
-  "description": "",
-  "type": "module",
-  "scripts": {
-    "bundle": "paperback-cli bundle",
-    "serve": "paperback-cli serve",
-    "dev": "paperback-cli serve --watch",
-    "logcat": "paperback-cli logcat",
-    "test": "paperback-cli test --noConsole --output ./bundles/tests.json",
-    "codegen": "graphql-codegen --config codegen.ts"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/ofelizestevez/suwayomi-paperback.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/ofelizestevez/suwayomi-paperback/issues"
-  },
-  "homepage": "https://github.com/ofelizestevez/suwayomi-paperback#readme",
-  "repositoryName": "Suwayomi Extensions",
-  "devDependencies": {
-    "@graphql-codegen/cli": "^7.4.6",
-    "@graphql-codegen/client-preset": "^6.2.3",
-    "@paperback/toolchain": "1.0.0-alpha.92",
-    "@paperback/types": "1.0.0-alpha.92",
-    "@types/node": "24.19.2",
-    "graphql": "^17.0.2",
-    "typescript": "^7.0.2"
-  },
-  "allowScripts": {
-    "protobufjs@7.6.6": true
-  },
-  "dependencies": {
-    "slugify": "^1.6.9"
-  }
+	"name": "suwayomi-paperback",
+	"version": "1.0.0",
+	"description": "",
+	"type": "module",
+	"scripts": {
+		"bundle": "paperback-cli bundle",
+		"serve": "paperback-cli serve",
+		"serve:watch": "paperback-cli serve --watch",
+		"logcat": "paperback-cli logcat",
+		"test": "paperback-cli test --noConsole --output ./bundles/tests.json",
+		"codegen": "graphql-codegen --config codegen.ts",
+		"codegen:watch": "graphql-codegen --config codegen.ts --watch",
+		"dev": "npm run codegen && concurrently -k -n graphql,paperback \"npm:codegen:watch\" \"npm:serve:watch\"",
+		"format": "oxfmt",
+		"format:check": "oxfmt --check",
+		"lint": "oxlint",
+		"lint:fix": "oxlint --fix",
+		"typecheck": "tsc --noEmit",
+		"check": "npm run format:check && npm run lint && npm run typecheck"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/ofelizestevez/suwayomi-paperback.git"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/ofelizestevez/suwayomi-paperback/issues"
+	},
+	"homepage": "https://github.com/ofelizestevez/suwayomi-paperback#readme",
+	"repositoryName": "Suwayomi Extensions",
+	"devDependencies": {
+		"@graphql-codegen/cli": "^7.4.6",
+		"@graphql-codegen/client-preset": "^6.2.3",
+		"@paperback/toolchain": "1.0.0-alpha.92",
+		"@paperback/types": "1.0.0-alpha.92",
+		"@parcel/watcher": "^2.6.0",
+		"@types/node": "24.19.2",
+		"concurrently": "^10.0.6",
+		"graphql": "^17.0.2",
+		"oxfmt": "^0.72.0",
+		"oxlint": "^1.87.0",
+		"oxlint-tsgolint": "^7.0.2004",
+		"typescript": "^7.0.2"
+	},
+	"allowScripts": {
+		"protobufjs@7.6.6": true,
+		"@parcel/watcher@2.6.0": true
+	},
+	"dependencies": {
+		"slugify": "^1.6.9"
+	}
 }

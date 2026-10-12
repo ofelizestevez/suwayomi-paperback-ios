@@ -30,28 +30,28 @@ export type LibraryCategoryMangaQueryVariables = Exact<{
 }>;
 
 
-export type LibraryCategoryMangaQuery = { category: { id: number, name: string, mangas: { totalCount: number, nodes: Array<{ id: number, title: string, description: string | null, thumbnailUrl: string | null, author: string | null, artist: string | null, status: MangaStatus, url: string, realUrl: string | null, age: unknown, genre: Array<string>, source: { id: unknown, displayName: string } | null }>, pageInfo: { hasNextPage: boolean } } } };
+export type LibraryCategoryMangaQuery = { category: { id: number, name: string, mangas: { totalCount: number, nodes: Array<{ id: number, title: string, description: string | null, thumbnailUrl: string | null, author: string | null, artist: string | null, status: MangaStatus, url: string, realUrl: string | null, age: string | null, genre: Array<string>, source: { id: string, displayName: string } | null }>, pageInfo: { hasNextPage: boolean } } } };
 
 export type MangaChaptersMutationVariables = Exact<{
   mangaId: number;
 }>;
 
 
-export type MangaChaptersMutation = { fetchMangaAndChapters: { chapters: Array<{ id: number, mangaId: number, name: string, chapterNumber: number, sourceOrder: number, uploadDate: unknown, scanlator: string | null }>, manga: { source: { lang: string } | null } } | null };
+export type MangaChaptersMutation = { fetchMangaAndChapters: { chapters: Array<{ id: number, mangaId: number, name: string, chapterNumber: number, sourceOrder: number, uploadDate: string, scanlator: string | null }>, manga: { source: { lang: string } | null } } | null };
 
 export type MangaDetailsQueryVariables = Exact<{
   id: number;
 }>;
 
 
-export type MangaDetailsQuery = { manga: { id: number, title: string, description: string | null, thumbnailUrl: string | null, author: string | null, artist: string | null, status: MangaStatus, url: string, realUrl: string | null, age: unknown, genre: Array<string>, source: { id: unknown, displayName: string } | null } };
+export type MangaDetailsQuery = { manga: { id: number, title: string, description: string | null, thumbnailUrl: string | null, author: string | null, artist: string | null, status: MangaStatus, url: string, realUrl: string | null, age: string | null, genre: Array<string>, source: { id: string, displayName: string } | null } };
 
 export type MangaProgressQueryVariables = Exact<{
   mangaId: number;
 }>;
 
 
-export type MangaProgressQuery = { manga: { source: { lang: string } | null, lastReadChapter: { id: number, mangaId: number, name: string, chapterNumber: number, sourceOrder: number, uploadDate: unknown, scanlator: string | null, isRead: boolean, lastReadAt: unknown } | null } };
+export type MangaProgressQuery = { manga: { source: { lang: string } | null, lastReadChapter: { id: number, mangaId: number, name: string, chapterNumber: number, sourceOrder: number, uploadDate: string, scanlator: string | null, isRead: boolean, lastReadAt: string } | null } };
 
 export type MarkChapterReadMutationVariables = Exact<{
   chapterId: number;

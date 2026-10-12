@@ -13,15 +13,15 @@ This optional example runs **Suwayomi**, **Tailscale**, and **Docktail** togethe
 
 ```json
 {
-  "tagOwners": {
-    "tag:server": ["autogroup:admin"],
-    "tag:container": ["tag:server"]
-  },
-  "autoApprovers": {
-    "services": {
-      "tag:container": ["tag:server"]
-    }
-  }
+	"tagOwners": {
+		"tag:server": ["autogroup:admin"],
+		"tag:container": ["tag:server"]
+	},
+	"autoApprovers": {
+		"services": {
+			"tag:container": ["tag:server"]
+		}
+	}
 }
 ```
 

@@ -1,16 +1,9 @@
 mutation MarkChapterRead($chapterId: Int!) {
-  updateChapter(
-    input: {
-      id: $chapterId
-      patch: {
-        isRead: true
-      }
-    }
-  ) {
-    chapter {
-      id
-      mangaId
-      isRead
-    }
-  }
+	updateChapter(input: { id: $chapterId, patch: { isRead: true } }) {
+		chapter {
+			id
+			mangaId
+			isRead
+		}
+	}
 }
