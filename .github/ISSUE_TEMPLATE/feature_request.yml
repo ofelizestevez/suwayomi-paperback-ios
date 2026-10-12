@@ -1,0 +1,31 @@
+name: "💡 Feature Idea"
+description: Capture an idea now; evaluate it later.
+title: "[Feature] "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: idea
+    attributes:
+      label: What do you want?
+      description: Describe the feature in a sentence or two.
+      placeholder: "I want to be able to..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: motivation
+    attributes:
+      label: Why do you want it?
+      description: What problem would this solve, or what would it improve?
+      placeholder: "This would be useful because..."
+    validations:
+      required: false
+
+  - type: textarea
+    id: experience
+    attributes:
+      label: Ideal experience
+      description: What would this look like from the user's perspective?
+      placeholder: "I open..., tap..., and then..."
+    validations:
+      required: false
