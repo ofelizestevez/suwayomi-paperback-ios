@@ -1,0 +1,15 @@
+query InstalledExtensions {
+	extensions(condition: { isInstalled: true }) {
+		nodes {
+			pkgName
+			name
+			source {
+				nodes {
+					id
+					displayName
+					lang
+				}
+			}
+		}
+	}
+}

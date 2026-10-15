@@ -1,17 +1,13 @@
 import type { Chapter, SourceManga } from '@paperback/types';
 
-import type { MangaChaptersMutation } from '../generated/graphql.js';
-
-type SuwayomiChapter = NonNullable<
-	MangaChaptersMutation['fetchMangaAndChapters']
->['chapters'][number];
+import type { Chapter_FieldsFragment as SuwayomiChapter } from '../generated/graphql';
 
 export function toChapter(
 	chapter: SuwayomiChapter,
 	sourceManga: SourceManga,
 	langCode: string,
 ): Chapter {
-	const uploadDate = Number(chapter.uploadDate);
+	const uploadDateMs = Number(chapter.uploadDate);
 
 	return {
 		chapterId: String(chapter.id),
@@ -22,7 +18,7 @@ export function toChapter(
 		sortingIndex: chapter.sourceOrder,
 
 		publishDate:
-			Number.isFinite(uploadDate) && uploadDate > 0 ? new Date(uploadDate) : undefined,
+			Number.isFinite(uploadDateMs) && uploadDateMs > 0 ? new Date(uploadDateMs) : undefined,
 
 		additionalInfo: chapter.scanlator ? { Scanlator: chapter.scanlator } : undefined,
 	};

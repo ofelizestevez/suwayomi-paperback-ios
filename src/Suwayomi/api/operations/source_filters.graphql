@@ -1,0 +1,94 @@
+fragment CHECKBOX_FIELDS on CheckBoxFilter {
+	type: __typename
+	CheckBoxFilterDefault: default
+	name
+}
+
+fragment HEADER_FIELDS on HeaderFilter {
+	type: __typename
+	name
+}
+
+fragment SELECT_FIELDS on SelectFilter {
+	type: __typename
+	SelectFilterDefault: default
+	name
+	values
+}
+
+fragment TRI_STATE_FIELDS on TriStateFilter {
+	type: __typename
+	TriStateFilterDefault: default
+	name
+}
+
+fragment TEXT_FIELDS on TextFilter {
+	type: __typename
+	TextFilterDefault: default
+	name
+}
+
+fragment SORT_FIELDS on SortFilter {
+	type: __typename
+	SortFilterDefault: default {
+		ascending
+		index
+		__typename
+	}
+	name
+	values
+}
+
+fragment SEPARATOR_FIELDS on SeparatorFilter {
+	type: __typename
+	name
+}
+
+fragment FILTER_FIELDS on Filter {
+	...CHECKBOX_FIELDS
+	...HEADER_FIELDS
+	...SELECT_FIELDS
+	...TRI_STATE_FIELDS
+	...TEXT_FIELDS
+	...SORT_FIELDS
+	...SEPARATOR_FIELDS
+	... on GroupFilter {
+		type: __typename
+		name
+	}
+}
+
+fragment FILTER_DEPTH_1 on Filter {
+	...FILTER_FIELDS
+	... on GroupFilter {
+		filters {
+			...FILTER_FIELDS
+		}
+	}
+}
+
+fragment FILTER_DEPTH_2 on Filter {
+	...FILTER_FIELDS
+	... on GroupFilter {
+		filters {
+			...FILTER_DEPTH_1
+		}
+	}
+}
+
+fragment FILTER_DEPTH_3 on Filter {
+	...FILTER_FIELDS
+	... on GroupFilter {
+		filters {
+			...FILTER_DEPTH_2
+		}
+	}
+}
+
+query SourceFilters($sourceId: LongString!) {
+	source(id: $sourceId) {
+		filters {
+			...FILTER_DEPTH_3
+		}
+	}
+}

@@ -1,20 +1,5 @@
 query MangaDetails($id: Int!) {
 	manga(id: $id) {
-		id
-		title
-		description
-		thumbnailUrl
-		author
-		artist
-		status
-		url
-		realUrl
-		age
-		genre
-
-		source {
-			id
-			displayName
-		}
+		...MANGA_FIELDS
 	}
 }

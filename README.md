@@ -28,7 +28,7 @@ The extension aims to support all six Paperback 0.9 intents, gradually expanding
 - **Remote or VPN Access:** HTTPS is recommended and may be required due to Apple's App Transport Security (ATS).
 - **Recommended:** Tailscale with HTTPS enabled through [Tailscale Services](https://tailscale.com/docs/features/tailscale-services) or [Tailscale Serve](https://tailscale.com/kb/1312/serve).
 
-**Recommended Server Setup:** [Docker + Tailscale + Docktail](examples/docker/README.md) ([example Compose file](examples/docker/compose.yml)). Other installation methods and valid HTTPS configurations are also supported.
+**Recommended Server Setup:** [Docker + Tailscale + Docktail](docs/docker/README.md) ([example Compose file](docs/docker/compose.yml)). Other installation methods and valid HTTPS configurations are also supported.
 
 ### Add to Paperback
 

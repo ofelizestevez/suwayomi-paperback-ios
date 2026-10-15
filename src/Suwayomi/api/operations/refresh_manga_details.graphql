@@ -1,0 +1,7 @@
+mutation RefreshMangaDetails($id: Int!) {
+	fetchMangaAndChapters(input: { id: $id, fetchManga: true, fetchChapters: false }) {
+		manga {
+			...MANGA_FIELDS
+		}
+	}
+}

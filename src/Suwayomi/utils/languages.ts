@@ -1,9 +1,22 @@
-import type { SourceLanguagesQuery } from '../api/generated/graphql.js';
+export function getLanguageName(code: string): string {
+	if (code === 'all') {
+		return 'Multi-language';
+	}
+	if (code === 'localsourcelang') {
+		return 'Local Source';
+	}
 
-export function getAvailableLanguages(data: SourceLanguagesQuery): string[] {
-	return [
-		...new Set(
-			data.sources.nodes.map((source) => source.lang).filter((lang) => lang.length > 0),
-		),
-	].sort();
+	try {
+		const displayNames = new Intl.DisplayNames(['en'], {
+			type: 'language',
+		});
+
+		return displayNames.of(code) ?? code;
+	} catch {
+		return code;
+	}
+}
+
+export function getChapterLanguageCode(code?: string | null): string {
+	return code && code !== 'all' ? code : 'und';
 }

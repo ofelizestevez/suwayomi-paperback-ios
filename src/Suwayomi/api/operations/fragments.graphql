@@ -1,0 +1,22 @@
+fragment MANGA_FIELDS on MangaType {
+	id
+	title
+	description
+	thumbnailUrl
+	author
+	artist
+	status
+	genre
+	initialized
+	lastFetchedAt
+}
+
+fragment CHAPTER_FIELDS on ChapterType {
+	id
+	mangaId
+	name
+	chapterNumber
+	sourceOrder
+	uploadDate
+	scanlator
+}

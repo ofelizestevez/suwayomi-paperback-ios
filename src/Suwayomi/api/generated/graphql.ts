@@ -4,6 +4,16 @@ type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 /** Internal type. DO NOT USE DIRECTLY. */
 export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
 import type { DocumentTypeDecoration } from '@graphql-typed-document-node/core';
+export type FilterChangeInput = {
+  checkBoxState?: boolean | null | undefined;
+  groupChange?: FilterChangeInput | null | undefined;
+  position: number;
+  selectState?: number | null | undefined;
+  sortState?: SortSelectionInput | null | undefined;
+  textState?: string | null | undefined;
+  triState?: TriState | null | undefined;
+};
+
 export type MangaStatus =
   | 'CANCELLED'
   | 'COMPLETED'
@@ -13,24 +23,43 @@ export type MangaStatus =
   | 'PUBLISHING_FINISHED'
   | 'UNKNOWN';
 
+export type SortSelectionInput = {
+  ascending: boolean;
+  index: number;
+};
+
+export type TriState =
+  | 'EXCLUDE'
+  | 'IGNORE'
+  | 'INCLUDE';
+
 export type ChapterPagesMutationVariables = Exact<{
   chapterId: number;
 }>;
 
 
-export type ChapterPagesMutation = { fetchChapterPages: { pages: Array<string>, chapter: { id: number, mangaId: number, sourceOrder: number, pageCount: number } } | null };
+export type ChapterPagesMutation = { fetchChapterPages: { pages: Array<string>, chapter: { mangaId: number, sourceOrder: number } } | null };
+
+export type Manga_FieldsFragment = { id: number, title: string, description: string | null, thumbnailUrl: string | null, author: string | null, artist: string | null, status: MangaStatus, genre: Array<string>, initialized: boolean, lastFetchedAt: string | null };
+
+export type Chapter_FieldsFragment = { id: number, mangaId: number, name: string, chapterNumber: number, sourceOrder: number, uploadDate: string, scanlator: string | null };
+
+export type InstalledExtensionsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type InstalledExtensionsQuery = { extensions: { nodes: Array<{ pkgName: string, name: string, source: { nodes: Array<{ id: string, displayName: string, lang: string }> } }> } };
 
 export type LibraryCategoriesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type LibraryCategoriesQuery = { categories: { nodes: Array<{ id: number, name: string, order: number, isDefaultCategory: boolean }> } };
+export type LibraryCategoriesQuery = { categories: { nodes: Array<{ id: number, name: string }> } };
 
 export type LibraryCategoryMangaQueryVariables = Exact<{
   categoryId: number;
 }>;
 
 
-export type LibraryCategoryMangaQuery = { category: { id: number, name: string, mangas: { totalCount: number, nodes: Array<{ id: number, title: string, description: string | null, thumbnailUrl: string | null, author: string | null, artist: string | null, status: MangaStatus, url: string, realUrl: string | null, age: string | null, genre: Array<string>, source: { id: string, displayName: string } | null }>, pageInfo: { hasNextPage: boolean } } } };
+export type LibraryCategoryMangaQuery = { category: { mangas: { totalCount: number, nodes: Array<{ id: number, title: string, description: string | null, thumbnailUrl: string | null, author: string | null, artist: string | null, status: MangaStatus, genre: Array<string>, initialized: boolean, lastFetchedAt: string | null }>, pageInfo: { hasNextPage: boolean } } } };
 
 export type MangaChaptersMutationVariables = Exact<{
   mangaId: number;
@@ -44,14 +73,14 @@ export type MangaDetailsQueryVariables = Exact<{
 }>;
 
 
-export type MangaDetailsQuery = { manga: { id: number, title: string, description: string | null, thumbnailUrl: string | null, author: string | null, artist: string | null, status: MangaStatus, url: string, realUrl: string | null, age: string | null, genre: Array<string>, source: { id: string, displayName: string } | null } };
+export type MangaDetailsQuery = { manga: { id: number, title: string, description: string | null, thumbnailUrl: string | null, author: string | null, artist: string | null, status: MangaStatus, genre: Array<string>, initialized: boolean, lastFetchedAt: string | null } };
 
 export type MangaProgressQueryVariables = Exact<{
   mangaId: number;
 }>;
 
 
-export type MangaProgressQuery = { manga: { source: { lang: string } | null, lastReadChapter: { id: number, mangaId: number, name: string, chapterNumber: number, sourceOrder: number, uploadDate: string, scanlator: string | null, isRead: boolean, lastReadAt: string } | null } };
+export type MangaProgressQuery = { manga: { source: { lang: string } | null, lastReadChapter: { isRead: boolean, lastReadAt: string, id: number, mangaId: number, name: string, chapterNumber: number, sourceOrder: number, uploadDate: string, scanlator: string | null } | null } };
 
 export type MarkChapterReadMutationVariables = Exact<{
   chapterId: number;
@@ -60,15 +89,251 @@ export type MarkChapterReadMutationVariables = Exact<{
 
 export type MarkChapterReadMutation = { updateChapter: { chapter: { id: number, mangaId: number, isRead: boolean } } | null };
 
+export type RefreshMangaDetailsMutationVariables = Exact<{
+  id: number;
+}>;
+
+
+export type RefreshMangaDetailsMutation = { fetchMangaAndChapters: { manga: { id: number, title: string, description: string | null, thumbnailUrl: string | null, author: string | null, artist: string | null, status: MangaStatus, genre: Array<string>, initialized: boolean, lastFetchedAt: string | null } } | null };
+
+export type SearchSourceMangaMutationVariables = Exact<{
+  sourceId: string;
+  page: number;
+  query: string;
+  filters?: Array<FilterChangeInput> | FilterChangeInput | null | undefined;
+}>;
+
+
+export type SearchSourceMangaMutation = { fetchSourceManga: { hasNextPage: boolean, mangas: Array<{ id: number, title: string, thumbnailUrl: string | null }> } | null };
+
 export type ServerVersionQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type ServerVersionQuery = { aboutServer: { name: string, version: string } };
+export type ServerVersionQuery = { aboutServer: { version: string } };
+
+export type Checkbox_FieldsFragment = { name: string, type: 'CheckBoxFilter', CheckBoxFilterDefault: boolean };
+
+export type Header_FieldsFragment = { name: string, type: 'HeaderFilter' };
+
+export type Select_FieldsFragment = { name: string, values: Array<string>, type: 'SelectFilter', SelectFilterDefault: number };
+
+export type Tri_State_FieldsFragment = { name: string, type: 'TriStateFilter', TriStateFilterDefault: TriState };
+
+export type Text_FieldsFragment = { name: string, type: 'TextFilter', TextFilterDefault: string };
+
+export type Sort_FieldsFragment = { name: string, values: Array<string>, type: 'SortFilter', SortFilterDefault: { __typename: 'SortSelection', ascending: boolean, index: number } | null };
+
+export type Separator_FieldsFragment = { name: string, type: 'SeparatorFilter' };
+
+type Filter_Fields_CheckBoxFilter_Fragment = { name: string, type: 'CheckBoxFilter', CheckBoxFilterDefault: boolean };
+
+type Filter_Fields_GroupFilter_Fragment = { name: string, type: 'GroupFilter' };
+
+type Filter_Fields_HeaderFilter_Fragment = { name: string, type: 'HeaderFilter' };
+
+type Filter_Fields_SelectFilter_Fragment = { name: string, values: Array<string>, type: 'SelectFilter', SelectFilterDefault: number };
+
+type Filter_Fields_SeparatorFilter_Fragment = { name: string, type: 'SeparatorFilter' };
+
+type Filter_Fields_SortFilter_Fragment = { name: string, values: Array<string>, type: 'SortFilter', SortFilterDefault: { __typename: 'SortSelection', ascending: boolean, index: number } | null };
+
+type Filter_Fields_TextFilter_Fragment = { name: string, type: 'TextFilter', TextFilterDefault: string };
+
+type Filter_Fields_TriStateFilter_Fragment = { name: string, type: 'TriStateFilter', TriStateFilterDefault: TriState };
+
+export type Filter_FieldsFragment =
+  | Filter_Fields_CheckBoxFilter_Fragment
+  | Filter_Fields_GroupFilter_Fragment
+  | Filter_Fields_HeaderFilter_Fragment
+  | Filter_Fields_SelectFilter_Fragment
+  | Filter_Fields_SeparatorFilter_Fragment
+  | Filter_Fields_SortFilter_Fragment
+  | Filter_Fields_TextFilter_Fragment
+  | Filter_Fields_TriStateFilter_Fragment
+;
+
+type Filter_Depth_1_CheckBoxFilter_Fragment = { name: string, type: 'CheckBoxFilter', CheckBoxFilterDefault: boolean };
+
+type Filter_Depth_1_GroupFilter_Fragment = { name: string, type: 'GroupFilter', filters: Array<
+    | { name: string, type: 'CheckBoxFilter', CheckBoxFilterDefault: boolean }
+    | { name: string, type: 'GroupFilter' }
+    | { name: string, type: 'HeaderFilter' }
+    | { name: string, values: Array<string>, type: 'SelectFilter', SelectFilterDefault: number }
+    | { name: string, type: 'SeparatorFilter' }
+    | { name: string, values: Array<string>, type: 'SortFilter', SortFilterDefault: { __typename: 'SortSelection', ascending: boolean, index: number } | null }
+    | { name: string, type: 'TextFilter', TextFilterDefault: string }
+    | { name: string, type: 'TriStateFilter', TriStateFilterDefault: TriState }
+  > };
+
+type Filter_Depth_1_HeaderFilter_Fragment = { name: string, type: 'HeaderFilter' };
+
+type Filter_Depth_1_SelectFilter_Fragment = { name: string, values: Array<string>, type: 'SelectFilter', SelectFilterDefault: number };
+
+type Filter_Depth_1_SeparatorFilter_Fragment = { name: string, type: 'SeparatorFilter' };
+
+type Filter_Depth_1_SortFilter_Fragment = { name: string, values: Array<string>, type: 'SortFilter', SortFilterDefault: { __typename: 'SortSelection', ascending: boolean, index: number } | null };
+
+type Filter_Depth_1_TextFilter_Fragment = { name: string, type: 'TextFilter', TextFilterDefault: string };
+
+type Filter_Depth_1_TriStateFilter_Fragment = { name: string, type: 'TriStateFilter', TriStateFilterDefault: TriState };
+
+export type Filter_Depth_1Fragment =
+  | Filter_Depth_1_CheckBoxFilter_Fragment
+  | Filter_Depth_1_GroupFilter_Fragment
+  | Filter_Depth_1_HeaderFilter_Fragment
+  | Filter_Depth_1_SelectFilter_Fragment
+  | Filter_Depth_1_SeparatorFilter_Fragment
+  | Filter_Depth_1_SortFilter_Fragment
+  | Filter_Depth_1_TextFilter_Fragment
+  | Filter_Depth_1_TriStateFilter_Fragment
+;
+
+type Filter_Depth_2_CheckBoxFilter_Fragment = { name: string, type: 'CheckBoxFilter', CheckBoxFilterDefault: boolean };
+
+type Filter_Depth_2_GroupFilter_Fragment = { name: string, type: 'GroupFilter', filters: Array<
+    | { name: string, type: 'CheckBoxFilter', CheckBoxFilterDefault: boolean }
+    | { name: string, type: 'GroupFilter', filters: Array<
+        | { name: string, type: 'CheckBoxFilter', CheckBoxFilterDefault: boolean }
+        | { name: string, type: 'GroupFilter' }
+        | { name: string, type: 'HeaderFilter' }
+        | { name: string, values: Array<string>, type: 'SelectFilter', SelectFilterDefault: number }
+        | { name: string, type: 'SeparatorFilter' }
+        | { name: string, values: Array<string>, type: 'SortFilter', SortFilterDefault: { __typename: 'SortSelection', ascending: boolean, index: number } | null }
+        | { name: string, type: 'TextFilter', TextFilterDefault: string }
+        | { name: string, type: 'TriStateFilter', TriStateFilterDefault: TriState }
+      > }
+    | { name: string, type: 'HeaderFilter' }
+    | { name: string, values: Array<string>, type: 'SelectFilter', SelectFilterDefault: number }
+    | { name: string, type: 'SeparatorFilter' }
+    | { name: string, values: Array<string>, type: 'SortFilter', SortFilterDefault: { __typename: 'SortSelection', ascending: boolean, index: number } | null }
+    | { name: string, type: 'TextFilter', TextFilterDefault: string }
+    | { name: string, type: 'TriStateFilter', TriStateFilterDefault: TriState }
+  > };
+
+type Filter_Depth_2_HeaderFilter_Fragment = { name: string, type: 'HeaderFilter' };
+
+type Filter_Depth_2_SelectFilter_Fragment = { name: string, values: Array<string>, type: 'SelectFilter', SelectFilterDefault: number };
+
+type Filter_Depth_2_SeparatorFilter_Fragment = { name: string, type: 'SeparatorFilter' };
+
+type Filter_Depth_2_SortFilter_Fragment = { name: string, values: Array<string>, type: 'SortFilter', SortFilterDefault: { __typename: 'SortSelection', ascending: boolean, index: number } | null };
+
+type Filter_Depth_2_TextFilter_Fragment = { name: string, type: 'TextFilter', TextFilterDefault: string };
+
+type Filter_Depth_2_TriStateFilter_Fragment = { name: string, type: 'TriStateFilter', TriStateFilterDefault: TriState };
+
+export type Filter_Depth_2Fragment =
+  | Filter_Depth_2_CheckBoxFilter_Fragment
+  | Filter_Depth_2_GroupFilter_Fragment
+  | Filter_Depth_2_HeaderFilter_Fragment
+  | Filter_Depth_2_SelectFilter_Fragment
+  | Filter_Depth_2_SeparatorFilter_Fragment
+  | Filter_Depth_2_SortFilter_Fragment
+  | Filter_Depth_2_TextFilter_Fragment
+  | Filter_Depth_2_TriStateFilter_Fragment
+;
+
+type Filter_Depth_3_CheckBoxFilter_Fragment = { name: string, type: 'CheckBoxFilter', CheckBoxFilterDefault: boolean };
+
+type Filter_Depth_3_GroupFilter_Fragment = { name: string, type: 'GroupFilter', filters: Array<
+    | { name: string, type: 'CheckBoxFilter', CheckBoxFilterDefault: boolean }
+    | { name: string, type: 'GroupFilter', filters: Array<
+        | { name: string, type: 'CheckBoxFilter', CheckBoxFilterDefault: boolean }
+        | { name: string, type: 'GroupFilter', filters: Array<
+            | { name: string, type: 'CheckBoxFilter', CheckBoxFilterDefault: boolean }
+            | { name: string, type: 'GroupFilter' }
+            | { name: string, type: 'HeaderFilter' }
+            | { name: string, values: Array<string>, type: 'SelectFilter', SelectFilterDefault: number }
+            | { name: string, type: 'SeparatorFilter' }
+            | { name: string, values: Array<string>, type: 'SortFilter', SortFilterDefault: { __typename: 'SortSelection', ascending: boolean, index: number } | null }
+            | { name: string, type: 'TextFilter', TextFilterDefault: string }
+            | { name: string, type: 'TriStateFilter', TriStateFilterDefault: TriState }
+          > }
+        | { name: string, type: 'HeaderFilter' }
+        | { name: string, values: Array<string>, type: 'SelectFilter', SelectFilterDefault: number }
+        | { name: string, type: 'SeparatorFilter' }
+        | { name: string, values: Array<string>, type: 'SortFilter', SortFilterDefault: { __typename: 'SortSelection', ascending: boolean, index: number } | null }
+        | { name: string, type: 'TextFilter', TextFilterDefault: string }
+        | { name: string, type: 'TriStateFilter', TriStateFilterDefault: TriState }
+      > }
+    | { name: string, type: 'HeaderFilter' }
+    | { name: string, values: Array<string>, type: 'SelectFilter', SelectFilterDefault: number }
+    | { name: string, type: 'SeparatorFilter' }
+    | { name: string, values: Array<string>, type: 'SortFilter', SortFilterDefault: { __typename: 'SortSelection', ascending: boolean, index: number } | null }
+    | { name: string, type: 'TextFilter', TextFilterDefault: string }
+    | { name: string, type: 'TriStateFilter', TriStateFilterDefault: TriState }
+  > };
+
+type Filter_Depth_3_HeaderFilter_Fragment = { name: string, type: 'HeaderFilter' };
+
+type Filter_Depth_3_SelectFilter_Fragment = { name: string, values: Array<string>, type: 'SelectFilter', SelectFilterDefault: number };
+
+type Filter_Depth_3_SeparatorFilter_Fragment = { name: string, type: 'SeparatorFilter' };
+
+type Filter_Depth_3_SortFilter_Fragment = { name: string, values: Array<string>, type: 'SortFilter', SortFilterDefault: { __typename: 'SortSelection', ascending: boolean, index: number } | null };
+
+type Filter_Depth_3_TextFilter_Fragment = { name: string, type: 'TextFilter', TextFilterDefault: string };
+
+type Filter_Depth_3_TriStateFilter_Fragment = { name: string, type: 'TriStateFilter', TriStateFilterDefault: TriState };
+
+export type Filter_Depth_3Fragment =
+  | Filter_Depth_3_CheckBoxFilter_Fragment
+  | Filter_Depth_3_GroupFilter_Fragment
+  | Filter_Depth_3_HeaderFilter_Fragment
+  | Filter_Depth_3_SelectFilter_Fragment
+  | Filter_Depth_3_SeparatorFilter_Fragment
+  | Filter_Depth_3_SortFilter_Fragment
+  | Filter_Depth_3_TextFilter_Fragment
+  | Filter_Depth_3_TriStateFilter_Fragment
+;
+
+export type SourceFiltersQueryVariables = Exact<{
+  sourceId: string;
+}>;
+
+
+export type SourceFiltersQuery = { source: { filters: Array<
+      | { name: string, type: 'CheckBoxFilter', CheckBoxFilterDefault: boolean }
+      | { name: string, type: 'GroupFilter', filters: Array<
+          | { name: string, type: 'CheckBoxFilter', CheckBoxFilterDefault: boolean }
+          | { name: string, type: 'GroupFilter', filters: Array<
+              | { name: string, type: 'CheckBoxFilter', CheckBoxFilterDefault: boolean }
+              | { name: string, type: 'GroupFilter', filters: Array<
+                  | { name: string, type: 'CheckBoxFilter', CheckBoxFilterDefault: boolean }
+                  | { name: string, type: 'GroupFilter' }
+                  | { name: string, type: 'HeaderFilter' }
+                  | { name: string, values: Array<string>, type: 'SelectFilter', SelectFilterDefault: number }
+                  | { name: string, type: 'SeparatorFilter' }
+                  | { name: string, values: Array<string>, type: 'SortFilter', SortFilterDefault: { __typename: 'SortSelection', ascending: boolean, index: number } | null }
+                  | { name: string, type: 'TextFilter', TextFilterDefault: string }
+                  | { name: string, type: 'TriStateFilter', TriStateFilterDefault: TriState }
+                > }
+              | { name: string, type: 'HeaderFilter' }
+              | { name: string, values: Array<string>, type: 'SelectFilter', SelectFilterDefault: number }
+              | { name: string, type: 'SeparatorFilter' }
+              | { name: string, values: Array<string>, type: 'SortFilter', SortFilterDefault: { __typename: 'SortSelection', ascending: boolean, index: number } | null }
+              | { name: string, type: 'TextFilter', TextFilterDefault: string }
+              | { name: string, type: 'TriStateFilter', TriStateFilterDefault: TriState }
+            > }
+          | { name: string, type: 'HeaderFilter' }
+          | { name: string, values: Array<string>, type: 'SelectFilter', SelectFilterDefault: number }
+          | { name: string, type: 'SeparatorFilter' }
+          | { name: string, values: Array<string>, type: 'SortFilter', SortFilterDefault: { __typename: 'SortSelection', ascending: boolean, index: number } | null }
+          | { name: string, type: 'TextFilter', TextFilterDefault: string }
+          | { name: string, type: 'TriStateFilter', TriStateFilterDefault: TriState }
+        > }
+      | { name: string, type: 'HeaderFilter' }
+      | { name: string, values: Array<string>, type: 'SelectFilter', SelectFilterDefault: number }
+      | { name: string, type: 'SeparatorFilter' }
+      | { name: string, values: Array<string>, type: 'SortFilter', SortFilterDefault: { __typename: 'SortSelection', ascending: boolean, index: number } | null }
+      | { name: string, type: 'TextFilter', TextFilterDefault: string }
+      | { name: string, type: 'TriStateFilter', TriStateFilterDefault: TriState }
+    > } };
 
 export type SourceLanguagesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type SourceLanguagesQuery = { sources: { nodes: Array<{ id: string, lang: string }> } };
+export type SourceLanguagesQuery = { sources: { nodes: Array<{ lang: string }> } };
 
 export class TypedDocumentString<TResult, TVariables>
   extends String
@@ -88,28 +353,378 @@ export class TypedDocumentString<TResult, TVariables>
     return this.value;
   }
 }
-
+export const Manga_FieldsFragmentDoc = new TypedDocumentString(`
+    fragment MANGA_FIELDS on MangaType {
+  id
+  title
+  description
+  thumbnailUrl
+  author
+  artist
+  status
+  genre
+  initialized
+  lastFetchedAt
+}
+    `, {"fragmentName":"MANGA_FIELDS"}) as unknown as TypedDocumentString<Manga_FieldsFragment, unknown>;
+export const Chapter_FieldsFragmentDoc = new TypedDocumentString(`
+    fragment CHAPTER_FIELDS on ChapterType {
+  id
+  mangaId
+  name
+  chapterNumber
+  sourceOrder
+  uploadDate
+  scanlator
+}
+    `, {"fragmentName":"CHAPTER_FIELDS"}) as unknown as TypedDocumentString<Chapter_FieldsFragment, unknown>;
+export const Checkbox_FieldsFragmentDoc = new TypedDocumentString(`
+    fragment CHECKBOX_FIELDS on CheckBoxFilter {
+  type: __typename
+  CheckBoxFilterDefault: default
+  name
+}
+    `, {"fragmentName":"CHECKBOX_FIELDS"}) as unknown as TypedDocumentString<Checkbox_FieldsFragment, unknown>;
+export const Header_FieldsFragmentDoc = new TypedDocumentString(`
+    fragment HEADER_FIELDS on HeaderFilter {
+  type: __typename
+  name
+}
+    `, {"fragmentName":"HEADER_FIELDS"}) as unknown as TypedDocumentString<Header_FieldsFragment, unknown>;
+export const Select_FieldsFragmentDoc = new TypedDocumentString(`
+    fragment SELECT_FIELDS on SelectFilter {
+  type: __typename
+  SelectFilterDefault: default
+  name
+  values
+}
+    `, {"fragmentName":"SELECT_FIELDS"}) as unknown as TypedDocumentString<Select_FieldsFragment, unknown>;
+export const Tri_State_FieldsFragmentDoc = new TypedDocumentString(`
+    fragment TRI_STATE_FIELDS on TriStateFilter {
+  type: __typename
+  TriStateFilterDefault: default
+  name
+}
+    `, {"fragmentName":"TRI_STATE_FIELDS"}) as unknown as TypedDocumentString<Tri_State_FieldsFragment, unknown>;
+export const Text_FieldsFragmentDoc = new TypedDocumentString(`
+    fragment TEXT_FIELDS on TextFilter {
+  type: __typename
+  TextFilterDefault: default
+  name
+}
+    `, {"fragmentName":"TEXT_FIELDS"}) as unknown as TypedDocumentString<Text_FieldsFragment, unknown>;
+export const Sort_FieldsFragmentDoc = new TypedDocumentString(`
+    fragment SORT_FIELDS on SortFilter {
+  type: __typename
+  SortFilterDefault: default {
+    ascending
+    index
+    __typename
+  }
+  name
+  values
+}
+    `, {"fragmentName":"SORT_FIELDS"}) as unknown as TypedDocumentString<Sort_FieldsFragment, unknown>;
+export const Separator_FieldsFragmentDoc = new TypedDocumentString(`
+    fragment SEPARATOR_FIELDS on SeparatorFilter {
+  type: __typename
+  name
+}
+    `, {"fragmentName":"SEPARATOR_FIELDS"}) as unknown as TypedDocumentString<Separator_FieldsFragment, unknown>;
+export const Filter_FieldsFragmentDoc = new TypedDocumentString(`
+    fragment FILTER_FIELDS on Filter {
+  ...CHECKBOX_FIELDS
+  ...HEADER_FIELDS
+  ...SELECT_FIELDS
+  ...TRI_STATE_FIELDS
+  ...TEXT_FIELDS
+  ...SORT_FIELDS
+  ...SEPARATOR_FIELDS
+  ... on GroupFilter {
+    type: __typename
+    name
+  }
+}
+    fragment CHECKBOX_FIELDS on CheckBoxFilter {
+  type: __typename
+  CheckBoxFilterDefault: default
+  name
+}
+fragment HEADER_FIELDS on HeaderFilter {
+  type: __typename
+  name
+}
+fragment SELECT_FIELDS on SelectFilter {
+  type: __typename
+  SelectFilterDefault: default
+  name
+  values
+}
+fragment TRI_STATE_FIELDS on TriStateFilter {
+  type: __typename
+  TriStateFilterDefault: default
+  name
+}
+fragment TEXT_FIELDS on TextFilter {
+  type: __typename
+  TextFilterDefault: default
+  name
+}
+fragment SORT_FIELDS on SortFilter {
+  type: __typename
+  SortFilterDefault: default {
+    ascending
+    index
+    __typename
+  }
+  name
+  values
+}
+fragment SEPARATOR_FIELDS on SeparatorFilter {
+  type: __typename
+  name
+}`, {"fragmentName":"FILTER_FIELDS"}) as unknown as TypedDocumentString<Filter_FieldsFragment, unknown>;
+export const Filter_Depth_1FragmentDoc = new TypedDocumentString(`
+    fragment FILTER_DEPTH_1 on Filter {
+  ...FILTER_FIELDS
+  ... on GroupFilter {
+    filters {
+      ...FILTER_FIELDS
+    }
+  }
+}
+    fragment CHECKBOX_FIELDS on CheckBoxFilter {
+  type: __typename
+  CheckBoxFilterDefault: default
+  name
+}
+fragment HEADER_FIELDS on HeaderFilter {
+  type: __typename
+  name
+}
+fragment SELECT_FIELDS on SelectFilter {
+  type: __typename
+  SelectFilterDefault: default
+  name
+  values
+}
+fragment TRI_STATE_FIELDS on TriStateFilter {
+  type: __typename
+  TriStateFilterDefault: default
+  name
+}
+fragment TEXT_FIELDS on TextFilter {
+  type: __typename
+  TextFilterDefault: default
+  name
+}
+fragment SORT_FIELDS on SortFilter {
+  type: __typename
+  SortFilterDefault: default {
+    ascending
+    index
+    __typename
+  }
+  name
+  values
+}
+fragment SEPARATOR_FIELDS on SeparatorFilter {
+  type: __typename
+  name
+}
+fragment FILTER_FIELDS on Filter {
+  ...CHECKBOX_FIELDS
+  ...HEADER_FIELDS
+  ...SELECT_FIELDS
+  ...TRI_STATE_FIELDS
+  ...TEXT_FIELDS
+  ...SORT_FIELDS
+  ...SEPARATOR_FIELDS
+  ... on GroupFilter {
+    type: __typename
+    name
+  }
+}`, {"fragmentName":"FILTER_DEPTH_1"}) as unknown as TypedDocumentString<Filter_Depth_1Fragment, unknown>;
+export const Filter_Depth_2FragmentDoc = new TypedDocumentString(`
+    fragment FILTER_DEPTH_2 on Filter {
+  ...FILTER_FIELDS
+  ... on GroupFilter {
+    filters {
+      ...FILTER_DEPTH_1
+    }
+  }
+}
+    fragment CHECKBOX_FIELDS on CheckBoxFilter {
+  type: __typename
+  CheckBoxFilterDefault: default
+  name
+}
+fragment HEADER_FIELDS on HeaderFilter {
+  type: __typename
+  name
+}
+fragment SELECT_FIELDS on SelectFilter {
+  type: __typename
+  SelectFilterDefault: default
+  name
+  values
+}
+fragment TRI_STATE_FIELDS on TriStateFilter {
+  type: __typename
+  TriStateFilterDefault: default
+  name
+}
+fragment TEXT_FIELDS on TextFilter {
+  type: __typename
+  TextFilterDefault: default
+  name
+}
+fragment SORT_FIELDS on SortFilter {
+  type: __typename
+  SortFilterDefault: default {
+    ascending
+    index
+    __typename
+  }
+  name
+  values
+}
+fragment SEPARATOR_FIELDS on SeparatorFilter {
+  type: __typename
+  name
+}
+fragment FILTER_FIELDS on Filter {
+  ...CHECKBOX_FIELDS
+  ...HEADER_FIELDS
+  ...SELECT_FIELDS
+  ...TRI_STATE_FIELDS
+  ...TEXT_FIELDS
+  ...SORT_FIELDS
+  ...SEPARATOR_FIELDS
+  ... on GroupFilter {
+    type: __typename
+    name
+  }
+}
+fragment FILTER_DEPTH_1 on Filter {
+  ...FILTER_FIELDS
+  ... on GroupFilter {
+    filters {
+      ...FILTER_FIELDS
+    }
+  }
+}`, {"fragmentName":"FILTER_DEPTH_2"}) as unknown as TypedDocumentString<Filter_Depth_2Fragment, unknown>;
+export const Filter_Depth_3FragmentDoc = new TypedDocumentString(`
+    fragment FILTER_DEPTH_3 on Filter {
+  ...FILTER_FIELDS
+  ... on GroupFilter {
+    filters {
+      ...FILTER_DEPTH_2
+    }
+  }
+}
+    fragment CHECKBOX_FIELDS on CheckBoxFilter {
+  type: __typename
+  CheckBoxFilterDefault: default
+  name
+}
+fragment HEADER_FIELDS on HeaderFilter {
+  type: __typename
+  name
+}
+fragment SELECT_FIELDS on SelectFilter {
+  type: __typename
+  SelectFilterDefault: default
+  name
+  values
+}
+fragment TRI_STATE_FIELDS on TriStateFilter {
+  type: __typename
+  TriStateFilterDefault: default
+  name
+}
+fragment TEXT_FIELDS on TextFilter {
+  type: __typename
+  TextFilterDefault: default
+  name
+}
+fragment SORT_FIELDS on SortFilter {
+  type: __typename
+  SortFilterDefault: default {
+    ascending
+    index
+    __typename
+  }
+  name
+  values
+}
+fragment SEPARATOR_FIELDS on SeparatorFilter {
+  type: __typename
+  name
+}
+fragment FILTER_FIELDS on Filter {
+  ...CHECKBOX_FIELDS
+  ...HEADER_FIELDS
+  ...SELECT_FIELDS
+  ...TRI_STATE_FIELDS
+  ...TEXT_FIELDS
+  ...SORT_FIELDS
+  ...SEPARATOR_FIELDS
+  ... on GroupFilter {
+    type: __typename
+    name
+  }
+}
+fragment FILTER_DEPTH_1 on Filter {
+  ...FILTER_FIELDS
+  ... on GroupFilter {
+    filters {
+      ...FILTER_FIELDS
+    }
+  }
+}
+fragment FILTER_DEPTH_2 on Filter {
+  ...FILTER_FIELDS
+  ... on GroupFilter {
+    filters {
+      ...FILTER_DEPTH_1
+    }
+  }
+}`, {"fragmentName":"FILTER_DEPTH_3"}) as unknown as TypedDocumentString<Filter_Depth_3Fragment, unknown>;
 export const ChapterPagesDocument = new TypedDocumentString(`
     mutation ChapterPages($chapterId: Int!) {
   fetchChapterPages(input: { chapterId: $chapterId }) {
     chapter {
-      id
       mangaId
       sourceOrder
-      pageCount
     }
     pages
   }
 }
     `) as unknown as TypedDocumentString<ChapterPagesMutation, ChapterPagesMutationVariables>;
+export const InstalledExtensionsDocument = new TypedDocumentString(`
+    query InstalledExtensions {
+  extensions(condition: { isInstalled: true }) {
+    nodes {
+      pkgName
+      name
+      source {
+        nodes {
+          id
+          displayName
+          lang
+        }
+      }
+    }
+  }
+}
+    `) as unknown as TypedDocumentString<InstalledExtensionsQuery, InstalledExtensionsQueryVariables>;
 export const LibraryCategoriesDocument = new TypedDocumentString(`
     query LibraryCategories {
   categories(order: [{ by: ORDER, byType: ASC }]) {
     nodes {
       id
       name
-      order
-      isDefaultCategory
     }
   }
 }
@@ -117,25 +732,9 @@ export const LibraryCategoriesDocument = new TypedDocumentString(`
 export const LibraryCategoryMangaDocument = new TypedDocumentString(`
     query LibraryCategoryManga($categoryId: Int!) {
   category(id: $categoryId) {
-    id
-    name
     mangas {
       nodes {
-        id
-        title
-        description
-        thumbnailUrl
-        author
-        artist
-        status
-        url
-        realUrl
-        age
-        genre
-        source {
-          id
-          displayName
-        }
+        ...MANGA_FIELDS
       }
       totalCount
       pageInfo {
@@ -144,20 +743,25 @@ export const LibraryCategoryMangaDocument = new TypedDocumentString(`
     }
   }
 }
-    `) as unknown as TypedDocumentString<LibraryCategoryMangaQuery, LibraryCategoryMangaQueryVariables>;
+    fragment MANGA_FIELDS on MangaType {
+  id
+  title
+  description
+  thumbnailUrl
+  author
+  artist
+  status
+  genre
+  initialized
+  lastFetchedAt
+}`) as unknown as TypedDocumentString<LibraryCategoryMangaQuery, LibraryCategoryMangaQueryVariables>;
 export const MangaChaptersDocument = new TypedDocumentString(`
     mutation MangaChapters($mangaId: Int!) {
   fetchMangaAndChapters(
     input: { id: $mangaId, fetchManga: false, fetchChapters: true }
   ) {
     chapters {
-      id
-      mangaId
-      name
-      chapterNumber
-      sourceOrder
-      uploadDate
-      scanlator
+      ...CHAPTER_FIELDS
     }
     manga {
       source {
@@ -166,28 +770,33 @@ export const MangaChaptersDocument = new TypedDocumentString(`
     }
   }
 }
-    `) as unknown as TypedDocumentString<MangaChaptersMutation, MangaChaptersMutationVariables>;
+    fragment CHAPTER_FIELDS on ChapterType {
+  id
+  mangaId
+  name
+  chapterNumber
+  sourceOrder
+  uploadDate
+  scanlator
+}`) as unknown as TypedDocumentString<MangaChaptersMutation, MangaChaptersMutationVariables>;
 export const MangaDetailsDocument = new TypedDocumentString(`
     query MangaDetails($id: Int!) {
   manga(id: $id) {
-    id
-    title
-    description
-    thumbnailUrl
-    author
-    artist
-    status
-    url
-    realUrl
-    age
-    genre
-    source {
-      id
-      displayName
-    }
+    ...MANGA_FIELDS
   }
 }
-    `) as unknown as TypedDocumentString<MangaDetailsQuery, MangaDetailsQueryVariables>;
+    fragment MANGA_FIELDS on MangaType {
+  id
+  title
+  description
+  thumbnailUrl
+  author
+  artist
+  status
+  genre
+  initialized
+  lastFetchedAt
+}`) as unknown as TypedDocumentString<MangaDetailsQuery, MangaDetailsQueryVariables>;
 export const MangaProgressDocument = new TypedDocumentString(`
     query MangaProgress($mangaId: Int!) {
   manga(id: $mangaId) {
@@ -195,19 +804,21 @@ export const MangaProgressDocument = new TypedDocumentString(`
       lang
     }
     lastReadChapter {
-      id
-      mangaId
-      name
-      chapterNumber
-      sourceOrder
-      uploadDate
-      scanlator
+      ...CHAPTER_FIELDS
       isRead
       lastReadAt
     }
   }
 }
-    `) as unknown as TypedDocumentString<MangaProgressQuery, MangaProgressQueryVariables>;
+    fragment CHAPTER_FIELDS on ChapterType {
+  id
+  mangaId
+  name
+  chapterNumber
+  sourceOrder
+  uploadDate
+  scanlator
+}`) as unknown as TypedDocumentString<MangaProgressQuery, MangaProgressQueryVariables>;
 export const MarkChapterReadDocument = new TypedDocumentString(`
     mutation MarkChapterRead($chapterId: Int!) {
   updateChapter(input: { id: $chapterId, patch: { isRead: true } }) {
@@ -219,19 +830,143 @@ export const MarkChapterReadDocument = new TypedDocumentString(`
   }
 }
     `) as unknown as TypedDocumentString<MarkChapterReadMutation, MarkChapterReadMutationVariables>;
+export const RefreshMangaDetailsDocument = new TypedDocumentString(`
+    mutation RefreshMangaDetails($id: Int!) {
+  fetchMangaAndChapters(
+    input: { id: $id, fetchManga: true, fetchChapters: false }
+  ) {
+    manga {
+      ...MANGA_FIELDS
+    }
+  }
+}
+    fragment MANGA_FIELDS on MangaType {
+  id
+  title
+  description
+  thumbnailUrl
+  author
+  artist
+  status
+  genre
+  initialized
+  lastFetchedAt
+}`) as unknown as TypedDocumentString<RefreshMangaDetailsMutation, RefreshMangaDetailsMutationVariables>;
+export const SearchSourceMangaDocument = new TypedDocumentString(`
+    mutation SearchSourceManga($sourceId: LongString!, $page: Int!, $query: String!, $filters: [FilterChangeInput!]) {
+  fetchSourceManga(
+    input: {
+      source: $sourceId
+      page: $page
+      query: $query
+      type: SEARCH
+      filters: $filters
+    }
+  ) {
+    hasNextPage
+    mangas {
+      id
+      title
+      thumbnailUrl
+    }
+  }
+}
+    `) as unknown as TypedDocumentString<SearchSourceMangaMutation, SearchSourceMangaMutationVariables>;
 export const ServerVersionDocument = new TypedDocumentString(`
     query ServerVersion {
   aboutServer {
-    name
     version
   }
 }
     `) as unknown as TypedDocumentString<ServerVersionQuery, ServerVersionQueryVariables>;
+export const SourceFiltersDocument = new TypedDocumentString(`
+    query SourceFilters($sourceId: LongString!) {
+  source(id: $sourceId) {
+    filters {
+      ...FILTER_DEPTH_3
+    }
+  }
+}
+    fragment CHECKBOX_FIELDS on CheckBoxFilter {
+  type: __typename
+  CheckBoxFilterDefault: default
+  name
+}
+fragment HEADER_FIELDS on HeaderFilter {
+  type: __typename
+  name
+}
+fragment SELECT_FIELDS on SelectFilter {
+  type: __typename
+  SelectFilterDefault: default
+  name
+  values
+}
+fragment TRI_STATE_FIELDS on TriStateFilter {
+  type: __typename
+  TriStateFilterDefault: default
+  name
+}
+fragment TEXT_FIELDS on TextFilter {
+  type: __typename
+  TextFilterDefault: default
+  name
+}
+fragment SORT_FIELDS on SortFilter {
+  type: __typename
+  SortFilterDefault: default {
+    ascending
+    index
+    __typename
+  }
+  name
+  values
+}
+fragment SEPARATOR_FIELDS on SeparatorFilter {
+  type: __typename
+  name
+}
+fragment FILTER_FIELDS on Filter {
+  ...CHECKBOX_FIELDS
+  ...HEADER_FIELDS
+  ...SELECT_FIELDS
+  ...TRI_STATE_FIELDS
+  ...TEXT_FIELDS
+  ...SORT_FIELDS
+  ...SEPARATOR_FIELDS
+  ... on GroupFilter {
+    type: __typename
+    name
+  }
+}
+fragment FILTER_DEPTH_1 on Filter {
+  ...FILTER_FIELDS
+  ... on GroupFilter {
+    filters {
+      ...FILTER_FIELDS
+    }
+  }
+}
+fragment FILTER_DEPTH_2 on Filter {
+  ...FILTER_FIELDS
+  ... on GroupFilter {
+    filters {
+      ...FILTER_DEPTH_1
+    }
+  }
+}
+fragment FILTER_DEPTH_3 on Filter {
+  ...FILTER_FIELDS
+  ... on GroupFilter {
+    filters {
+      ...FILTER_DEPTH_2
+    }
+  }
+}`) as unknown as TypedDocumentString<SourceFiltersQuery, SourceFiltersQueryVariables>;
 export const SourceLanguagesDocument = new TypedDocumentString(`
     query SourceLanguages {
   sources {
     nodes {
-      id
       lang
     }
   }

@@ -1,9 +1,8 @@
 import { ContentRating, type SourceManga } from '@paperback/types';
 import slugify from 'slugify';
 
-import type { MangaDetailsQuery } from '../generated/graphql';
-
-type SuwayomiManga = MangaDetailsQuery['manga'];
+import { getMangaThumbnailUrl, resolveServerUrl } from '../../utils/url';
+import type { Manga_FieldsFragment as SuwayomiManga } from '../generated/graphql';
 
 export function toSourceManga(manga: SuwayomiManga, serverUrl: string): SourceManga {
 	return {
@@ -27,8 +26,8 @@ export function toSourceManga(manga: SuwayomiManga, serverUrl: string): SourceMa
 			status: manga.status,
 			artist: manga.artist ?? undefined,
 			author: manga.author ?? undefined,
-			thumbnailUrl: serverUrl + manga.thumbnailUrl,
-			shareUrl: serverUrl + '/manga/' + manga.id,
+			thumbnailUrl: getMangaThumbnailUrl(serverUrl, manga),
+			shareUrl: resolveServerUrl(serverUrl, `/manga/${manga.id}`),
 		},
 	};
 }

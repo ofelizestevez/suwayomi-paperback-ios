@@ -1,4 +1,5 @@
-import type { TypedDocumentString } from './generated/graphql.js';
+import { normalizeServerUrl } from '../utils/url';
+import type { TypedDocumentString } from './generated/graphql';
 
 interface GraphQLResponse<T> {
 	data?: T | null;
@@ -10,7 +11,11 @@ export async function executeGraphQL<TData, TVariables>(
 	document: TypedDocumentString<TData, TVariables>,
 	variables?: TVariables,
 ): Promise<TData> {
-	const baseUrl = serverUrl.trim().replace(/\/+$/, '');
+	const baseUrl = normalizeServerUrl(serverUrl);
+
+	if (!baseUrl) {
+		throw new Error('Configure your Suwayomi server first.');
+	}
 
 	const [response, body] = await Application.scheduleRequest({
 		url: `${baseUrl}/api/graphql`,
@@ -41,8 +46,20 @@ export async function executeGraphQL<TData, TVariables>(
 		throw new Error('The server did not return valid JSON.');
 	}
 
+	if (!result || typeof result !== 'object' || Array.isArray(result)) {
+		throw new Error('The server did not return a GraphQL response.');
+	}
+
+	if (result.errors != null && !Array.isArray(result.errors)) {
+		throw new Error('The GraphQL response contains invalid errors.');
+	}
+
 	if (result.errors?.length) {
-		throw new Error(result.errors.map((error) => error.message).join('; '));
+		const messages = result.errors.map((error) =>
+			typeof error?.message === 'string' ? error.message : 'Unknown GraphQL error.',
+		);
+
+		throw new Error(messages.join('; '));
 	}
 
 	if (!result.data) {

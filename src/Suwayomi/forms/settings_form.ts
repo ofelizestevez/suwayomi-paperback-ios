@@ -1,7 +1,7 @@
 import { Form, NavigationRow, Section, type FormSectionElement } from '@paperback/types';
 
-import { SearchDiscoverForm } from './search_discover';
-import { serverConnectionForm } from './server_connection';
+import { SearchSettingsForm } from './settings/search_settings_form';
+import { ServerConnectionForm } from './settings/server_connection_form';
 
 export class SettingsForm extends Form {
 	override getSections(): FormSectionElement<unknown>[] {
@@ -9,11 +9,11 @@ export class SettingsForm extends Form {
 			Section('serverConnection', [
 				NavigationRow('serverConnection', {
 					title: 'Server Settings',
-					form: new serverConnectionForm(),
+					form: new ServerConnectionForm(),
 				}),
 				NavigationRow('searchDiscover', {
 					title: 'Search & Discover',
-					form: new SearchDiscoverForm(),
+					form: new SearchSettingsForm(),
 				}),
 			]),
 		];

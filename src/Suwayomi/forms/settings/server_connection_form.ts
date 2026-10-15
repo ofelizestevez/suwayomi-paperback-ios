@@ -7,11 +7,12 @@ import {
 	type FormSectionElement,
 } from '@paperback/types';
 
-import { executeGraphQL } from '../api/client';
-import { ServerVersionDocument } from '../api/generated/graphql';
-import { config } from '../config';
+import { executeGraphQL } from '../../api/client';
+import { ServerVersionDocument } from '../../api/generated/graphql';
+import { config } from '../../config';
+import { normalizeServerUrl } from '../../utils/url';
 
-export class serverConnectionForm extends Form {
+export class ServerConnectionForm extends Form {
 	private serverUrl: string = config.serverUrl;
 	private connectionStatus?: {
 		text: string;
@@ -28,7 +29,7 @@ export class serverConnectionForm extends Form {
 				title: 'URL',
 				value: this.serverUrl,
 				onValueChange: Application.Selector(
-					this as serverConnectionForm,
+					this as ServerConnectionForm,
 					'updateServerUrl',
 				),
 			}),
@@ -37,9 +38,9 @@ export class serverConnectionForm extends Form {
 
 	testConnectionSection() {
 		return Section({ id: 'testConnection' }, [
-			ButtonRow('textConnection', {
+			ButtonRow('testConnection', {
 				title: 'Test Connection',
-				onSelect: Application.Selector(this as serverConnectionForm, 'testConnection'),
+				onSelect: Application.Selector(this as ServerConnectionForm, 'testConnection'),
 			}),
 			LabelRow('connectionStatus', {
 				title: 'Status',
@@ -53,11 +54,10 @@ export class serverConnectionForm extends Form {
 		this.connectionStatus = undefined;
 
 		config.serverUrl = value;
-		this.testConnection();
 	}
 
 	async testConnection(): Promise<void> {
-		const url = this.serverUrl.trim();
+		const url = normalizeServerUrl(this.serverUrl);
 
 		if (!/^https?:\/\/[^/\s]+/i.test(url)) {
 			this.connectionStatus = {

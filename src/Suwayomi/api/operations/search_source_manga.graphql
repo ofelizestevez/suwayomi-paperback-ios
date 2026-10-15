@@ -1,0 +1,17 @@
+mutation SearchSourceManga(
+	$sourceId: LongString!
+	$page: Int!
+	$query: String!
+	$filters: [FilterChangeInput!]
+) {
+	fetchSourceManga(
+		input: { source: $sourceId, page: $page, query: $query, type: SEARCH, filters: $filters }
+	) {
+		hasNextPage
+		mangas {
+			id
+			title
+			thumbnailUrl
+		}
+	}
+}

@@ -4,13 +4,7 @@ query MangaProgress($mangaId: Int!) {
 			lang
 		}
 		lastReadChapter {
-			id
-			mangaId
-			name
-			chapterNumber
-			sourceOrder
-			uploadDate
-			scanlator
+			...CHAPTER_FIELDS
 			isRead
 			lastReadAt
 		}

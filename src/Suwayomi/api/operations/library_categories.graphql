@@ -3,8 +3,6 @@ query LibraryCategories {
 		nodes {
 			id
 			name
-			order
-			isDefaultCategory
 		}
 	}
 }

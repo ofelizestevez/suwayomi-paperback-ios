@@ -16,6 +16,9 @@ const config: CodegenConfig = {
 	generates: {
 		'src/Suwayomi/api/generated/': {
 			preset: 'client',
+			presetConfig: {
+				fragmentMasking: false,
+			},
 			config: {
 				documentMode: 'string',
 				useTypeImports: true,

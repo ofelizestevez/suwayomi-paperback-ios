@@ -1,6 +1,5 @@
 query ServerVersion {
 	aboutServer {
-		name
 		version
 	}
 }
