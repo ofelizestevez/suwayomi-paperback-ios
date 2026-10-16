@@ -1,6 +1,11 @@
 import { config } from '../../config';
 import { executeGraphQL } from '../client';
-import { InstalledExtensionsDocument, type InstalledExtensionsQuery } from '../generated/graphql';
+import {
+	InstalledExtensionsDocument,
+	SourceDetailsDocument,
+	type InstalledExtensionsQuery,
+	type SourceDetailsQuery,
+} from '../generated/graphql';
 
 export type InstalledExtension = InstalledExtensionsQuery['extensions']['nodes'][number];
 
@@ -9,6 +14,10 @@ export type InstalledSource = InstalledExtension['source']['nodes'][number];
 export type SearchSource = InstalledSource & {
 	extensionName: string;
 };
+
+export type SourcePreferences = NonNullable<SourceDetails['preferences']>;
+
+export type SourceDetails = SourceDetailsQuery['source'];
 
 export async function getEnabledSearchSources(): Promise<SearchSource[]> {
 	const result = await executeGraphQL(config.serverUrl, InstalledExtensionsDocument);
@@ -33,4 +42,16 @@ export async function getEnabledSearchSources(): Promise<SearchSource[]> {
 
 			return a.extensionName.localeCompare(b.extensionName) || a.lang.localeCompare(b.lang);
 		});
+}
+
+export async function getSourceDetails(
+	sourceId: string,
+	includePreferences: boolean,
+): Promise<SourceDetails> {
+	const result = await executeGraphQL(config.serverUrl, SourceDetailsDocument, {
+		sourceId,
+		includePreferences,
+	});
+
+	return result.source;
 }

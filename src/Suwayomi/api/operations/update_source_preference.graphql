@@ -1,0 +1,7 @@
+mutation UpdateSourcePreference($sourceId: LongString!, $change: SourcePreferenceChangeInput!) {
+	updateSourcePreference(input: { source: $sourceId, change: $change }) {
+		preferences {
+			...SOURCE_PREFERENCE
+		}
+	}
+}

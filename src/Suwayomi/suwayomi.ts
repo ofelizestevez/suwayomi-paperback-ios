@@ -28,6 +28,7 @@ import {
 	MarkChapterReadDocument,
 	SearchSourceMangaDocument,
 	RefreshMangaDetailsDocument,
+	UpdateMangasCategoriesDocument,
 } from './api/generated/graphql';
 import { toChapter } from './api/mappers/chapter';
 import { toSourceManga } from './api/mappers/manga';
@@ -92,8 +93,30 @@ export class SuwayomiExtension implements ExtensionImpl<typeof SuwayomiExtension
 		}));
 	}
 
-	commitManagedCollectionChanges(changeset: ManagedCollectionChangeset): Promise<void> {
-		throw new Error('Method not implemented.');
+	async commitManagedCollectionChanges(changeset: ManagedCollectionChangeset): Promise<void> {
+		const serverUrl = config.serverUrl;
+
+		const categoryId = parseServerId(changeset.collection.id, 'category');
+		const additionIds = changeset.additions.map((manga) =>
+			parseServerId(manga.mangaId, 'manga'),
+		);
+		const deletionIds = changeset.deletions.map((manga) =>
+			parseServerId(manga.mangaId, 'manga'),
+		);
+
+		if (additionIds.length > 0) {
+			await executeGraphQL(serverUrl, UpdateMangasCategoriesDocument, {
+				mangaIds: additionIds,
+				patch: { addToCategories: [categoryId] },
+			});
+		}
+
+		if (deletionIds.length > 0) {
+			await executeGraphQL(serverUrl, UpdateMangasCategoriesDocument, {
+				mangaIds: deletionIds,
+				patch: { removeFromCategories: [categoryId] },
+			});
+		}
 	}
 
 	async getSourceMangaInManagedCollection(

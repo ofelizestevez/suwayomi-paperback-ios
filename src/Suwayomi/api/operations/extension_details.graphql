@@ -1,0 +1,5 @@
+query ExtensionDetails($pkgName: String!) {
+	extension(pkgName: $pkgName) {
+		...EXTENSION_DETAILS
+	}
+}

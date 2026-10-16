@@ -1,0 +1,7 @@
+mutation UpdateExtension($pkgName: String!, $patch: UpdateExtensionPatchInput!) {
+	updateExtension(input: { id: $pkgName, patch: $patch }) {
+		extension {
+			...EXTENSION_DETAILS
+		}
+	}
+}

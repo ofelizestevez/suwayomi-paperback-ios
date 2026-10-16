@@ -1,0 +1,8 @@
+query SourceDetails($sourceId: LongString!, $includePreferences: Boolean!) {
+	source(id: $sourceId) {
+		...SOURCE_DETAILS
+		preferences @include(if: $includePreferences) {
+			...SOURCE_PREFERENCE
+		}
+	}
+}

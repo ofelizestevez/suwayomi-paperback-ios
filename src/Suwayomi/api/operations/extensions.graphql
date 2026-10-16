@@ -1,0 +1,17 @@
+query Extensions {
+	extensions {
+		nodes {
+			pkgName
+			name
+			lang
+			versionName
+			isInstalled
+			hasUpdate
+			isObsolete
+		}
+		totalCount
+		pageInfo {
+			hasNextPage
+		}
+	}
+}

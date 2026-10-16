@@ -1,0 +1,5 @@
+mutation RefreshExtensions {
+	fetchExtensions(input: {}) {
+		__typename
+	}
+}

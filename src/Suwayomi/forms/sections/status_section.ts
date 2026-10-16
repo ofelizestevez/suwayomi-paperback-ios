@@ -1,5 +1,5 @@
-import { LabelRow, Section, type FormSectionElement } from '@paperback/types';
+import { LabelRow, Section } from '@paperback/types';
 
-export function statusSection(id: string, message: string): FormSectionElement<unknown> {
+export function statusSection(id: string, message: string) {
 	return Section(id, [LabelRow('status', { title: message })]);
 }

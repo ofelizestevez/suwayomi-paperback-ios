@@ -5,9 +5,7 @@ query InstalledExtensions {
 			name
 			source {
 				nodes {
-					id
-					displayName
-					lang
+					...SOURCE_DETAILS
 				}
 			}
 		}

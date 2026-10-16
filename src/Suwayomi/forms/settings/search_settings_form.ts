@@ -13,7 +13,7 @@ import { SourceLanguagesDocument } from '../../api/generated/graphql';
 import { config } from '../../config';
 import { getLanguageName } from '../../utils/languages';
 import { statusSection } from '../sections/status_section';
-import { InstalledExtensionsForm } from './installed_extensions_form';
+import { ExtensionsForm } from './extensions_form';
 import { SearchSourceOrderForm } from './search_source_order_form';
 
 type LanguageSelection = Record<string, 'included' | 'excluded'>;
@@ -96,10 +96,10 @@ export class SearchSettingsForm extends Form {
 	}
 
 	installedExtensionsSection() {
-		return Section({ id: 'installedExtensions' }, [
-			NavigationRow('installedExtensions', {
-				title: 'Installed Extensions',
-				form: new InstalledExtensionsForm(),
+		return Section({ id: 'Extensions' }, [
+			NavigationRow('Extensions', {
+				title: 'Extensions',
+				form: new ExtensionsForm(),
 			}),
 		]);
 	}

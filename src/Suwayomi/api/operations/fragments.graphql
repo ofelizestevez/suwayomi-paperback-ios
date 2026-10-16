@@ -20,3 +20,85 @@ fragment CHAPTER_FIELDS on ChapterType {
 	uploadDate
 	scanlator
 }
+
+fragment EXTENSION_DETAILS on ExtensionType {
+	pkgName
+	name
+	lang
+	versionName
+	isInstalled
+	hasUpdate
+	isObsolete
+	source {
+		nodes {
+			...SOURCE_DETAILS
+		}
+	}
+}
+
+fragment SOURCE_DETAILS on SourceType {
+	id
+	displayName
+	lang
+	contentWarning
+	isConfigurable
+	supportsLatest
+}
+
+fragment SOURCE_PREFERENCE on Preference {
+	type: __typename
+
+	... on CheckBoxPreference {
+		key
+		title
+		summary
+		enabled
+		visible
+		booleanValue: currentValue
+		booleanDefault: default
+	}
+	... on SwitchPreference {
+		key
+		title
+		summary
+		enabled
+		visible
+		booleanValue: currentValue
+		booleanDefault: default
+	}
+	... on EditTextPreference {
+		key
+		title
+		summary
+		enabled
+		visible
+		stringValue: currentValue
+		stringDefault: default
+		dialogTitle
+		dialogMessage
+	}
+	... on ListPreference {
+		key
+		title
+		summary
+		enabled
+		visible
+		entries
+		entryValues
+		stringValue: currentValue
+		stringDefault: default
+	}
+	... on MultiSelectListPreference {
+		key
+		title
+		summary
+		enabled
+		visible
+		entries
+		entryValues
+		selectedValues: currentValue
+		defaultValues: default
+		dialogTitle
+		dialogMessage
+	}
+}
