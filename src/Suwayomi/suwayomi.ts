@@ -135,7 +135,9 @@ export class SuwayomiExtension implements ExtensionImpl<typeof SuwayomiExtension
 			throw new Error(`Incomplete category: received ${nodes.length} of ${totalCount} manga`);
 		}
 
-		return nodes.map((manga) => toSourceManga(manga, serverUrl));
+		const mangaInSuwayomiLibrary = nodes.filter((manga) => manga.inLibrary);
+
+		return mangaInSuwayomiLibrary.map((manga) => toSourceManga(manga, serverUrl));
 	}
 
 	async getChapters(sourceManga: SourceManga): Promise<Chapter[]> {

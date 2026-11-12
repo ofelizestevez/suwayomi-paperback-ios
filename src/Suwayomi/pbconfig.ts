@@ -4,7 +4,7 @@ export default {
 	name: 'Suwayomi',
 	description:
 		'Connect to your self-hosted Suwayomi server to browse manga, access your library, and read chapters directly in Paperback.',
-	version: '0.0.5',
+	version: '0.0.6',
 	icon: 'icon.png',
 	language: 'en',
 	contentRating: ContentRating.EVERYONE,

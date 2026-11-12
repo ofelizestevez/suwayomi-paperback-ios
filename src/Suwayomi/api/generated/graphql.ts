@@ -119,7 +119,7 @@ export type LibraryCategoryMangaQueryVariables = Exact<{
 }>;
 
 
-export type LibraryCategoryMangaQuery = { category: { mangas: { totalCount: number, nodes: Array<{ id: number, title: string, description: string | null, thumbnailUrl: string | null, author: string | null, artist: string | null, status: MangaStatus, genre: Array<string>, initialized: boolean, lastFetchedAt: string | null }>, pageInfo: { hasNextPage: boolean } } } };
+export type LibraryCategoryMangaQuery = { category: { mangas: { totalCount: number, nodes: Array<{ inLibrary: boolean, id: number, title: string, description: string | null, thumbnailUrl: string | null, author: string | null, artist: string | null, status: MangaStatus, genre: Array<string>, initialized: boolean, lastFetchedAt: string | null }>, pageInfo: { hasNextPage: boolean } } } };
 
 export type MangaChaptersMutationVariables = Exact<{
   mangaId: number;
@@ -428,7 +428,7 @@ export type UpdateMangasCategoriesMutationVariables = Exact<{
 }>;
 
 
-export type UpdateMangasCategoriesMutation = { updateMangasCategories: { mangas: Array<{ id: number, categories: { nodes: Array<{ id: number }> } }> } | null };
+export type UpdateMangasCategoriesMutation = { updateMangasCategories: { mangas: Array<{ id: number, categories: { nodes: Array<{ id: number }> } }> } | null, updateMangas: { mangas: Array<{ id: number, inLibrary: boolean }> } | null };
 
 export type UpdateSourcePreferenceMutationVariables = Exact<{
   sourceId: string;
@@ -987,6 +987,7 @@ export const LibraryCategoryMangaDocument = new TypedDocumentString(`
     mangas {
       nodes {
         ...MANGA_FIELDS
+        inLibrary
       }
       totalCount
       pageInfo {
@@ -1344,6 +1345,12 @@ export const UpdateMangasCategoriesDocument = new TypedDocumentString(`
           id
         }
       }
+    }
+  }
+  updateMangas(input: { ids: $mangaIds, patch: { inLibrary: true } }) {
+    mangas {
+      id
+      inLibrary
     }
   }
 }

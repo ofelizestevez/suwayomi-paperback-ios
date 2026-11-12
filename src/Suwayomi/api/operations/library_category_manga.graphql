@@ -3,6 +3,7 @@ query LibraryCategoryManga($categoryId: Int!) {
 		mangas {
 			nodes {
 				...MANGA_FIELDS
+				inLibrary
 			}
 			totalCount
 			pageInfo {

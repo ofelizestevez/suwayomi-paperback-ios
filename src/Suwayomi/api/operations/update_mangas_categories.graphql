@@ -9,4 +9,11 @@ mutation UpdateMangasCategories($mangaIds: [Int!]!, $patch: UpdateMangaCategorie
 			}
 		}
 	}
+
+	updateMangas(input: { ids: $mangaIds, patch: { inLibrary: true } }) {
+		mangas {
+			id
+			inLibrary
+		}
+	}
 }
