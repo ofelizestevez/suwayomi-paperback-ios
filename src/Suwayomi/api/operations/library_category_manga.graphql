@@ -1,13 +1,12 @@
-query LibraryCategoryManga($categoryId: Int!) {
-	category(id: $categoryId) {
-		mangas {
-			nodes {
-				...MANGA_FIELDS
-				inLibrary
-			}
-			totalCount
-			pageInfo {
-				hasNextPage
+query LibraryCategoriesMangas($categoryIds: [Int!]) {
+	categories(filter: { id: { in: $categoryIds } }) {
+		nodes {
+			id
+			mangas {
+				nodes {
+					...MANGA_FIELDS
+					inLibrary
+				}
 			}
 		}
 	}

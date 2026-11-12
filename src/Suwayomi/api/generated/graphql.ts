@@ -114,12 +114,12 @@ export type LibraryCategoriesQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type LibraryCategoriesQuery = { categories: { nodes: Array<{ id: number, name: string }> } };
 
-export type LibraryCategoryMangaQueryVariables = Exact<{
-  categoryId: number;
+export type LibraryCategoriesMangasQueryVariables = Exact<{
+  categoryIds?: Array<number> | number | null | undefined;
 }>;
 
 
-export type LibraryCategoryMangaQuery = { category: { mangas: { totalCount: number, nodes: Array<{ inLibrary: boolean, id: number, title: string, description: string | null, thumbnailUrl: string | null, author: string | null, artist: string | null, status: MangaStatus, genre: Array<string>, initialized: boolean, lastFetchedAt: string | null }>, pageInfo: { hasNextPage: boolean } } } };
+export type LibraryCategoriesMangasQuery = { categories: { nodes: Array<{ id: number, mangas: { nodes: Array<{ inLibrary: boolean, id: number, title: string, description: string | null, thumbnailUrl: string | null, author: string | null, artist: string | null, status: MangaStatus, genre: Array<string>, initialized: boolean, lastFetchedAt: string | null }> } }> } };
 
 export type MangaChaptersMutationVariables = Exact<{
   mangaId: number;
@@ -422,13 +422,13 @@ export type UpdateExtensionMutationVariables = Exact<{
 
 export type UpdateExtensionMutation = { updateExtension: { extension: { pkgName: string, name: string, lang: string, versionName: string, isInstalled: boolean, hasUpdate: boolean, isObsolete: boolean, source: { nodes: Array<{ id: string, displayName: string, lang: string, contentWarning: ContentWarning, isConfigurable: boolean, supportsLatest: boolean }> } } | null } | null };
 
-export type UpdateMangasCategoriesMutationVariables = Exact<{
-  mangaIds: Array<number> | number;
+export type UpdateMangaCategoriesMutationVariables = Exact<{
+  mangaId: number;
   patch: UpdateMangaCategoriesPatchInput;
 }>;
 
 
-export type UpdateMangasCategoriesMutation = { updateMangasCategories: { mangas: Array<{ id: number, categories: { nodes: Array<{ id: number }> } }> } | null, updateMangas: { mangas: Array<{ id: number, inLibrary: boolean }> } | null };
+export type UpdateMangaCategoriesMutation = { updateMangaCategories: { manga: { id: number, categories: { nodes: Array<{ id: number }> } } } | null, updateManga: { manga: { id: number, inLibrary: boolean } } | null };
 
 export type UpdateSourcePreferenceMutationVariables = Exact<{
   sourceId: string;
@@ -981,17 +981,16 @@ export const LibraryCategoriesDocument = new TypedDocumentString(`
   }
 }
     `) as unknown as TypedDocumentString<LibraryCategoriesQuery, LibraryCategoriesQueryVariables>;
-export const LibraryCategoryMangaDocument = new TypedDocumentString(`
-    query LibraryCategoryManga($categoryId: Int!) {
-  category(id: $categoryId) {
-    mangas {
-      nodes {
-        ...MANGA_FIELDS
-        inLibrary
-      }
-      totalCount
-      pageInfo {
-        hasNextPage
+export const LibraryCategoriesMangasDocument = new TypedDocumentString(`
+    query LibraryCategoriesMangas($categoryIds: [Int!]) {
+  categories(filter: { id: { in: $categoryIds } }) {
+    nodes {
+      id
+      mangas {
+        nodes {
+          ...MANGA_FIELDS
+          inLibrary
+        }
       }
     }
   }
@@ -1007,7 +1006,7 @@ export const LibraryCategoryMangaDocument = new TypedDocumentString(`
   genre
   initialized
   lastFetchedAt
-}`) as unknown as TypedDocumentString<LibraryCategoryMangaQuery, LibraryCategoryMangaQueryVariables>;
+}`) as unknown as TypedDocumentString<LibraryCategoriesMangasQuery, LibraryCategoriesMangasQueryVariables>;
 export const MangaChaptersDocument = new TypedDocumentString(`
     mutation MangaChapters($mangaId: Int!) {
   fetchMangaAndChapters(
@@ -1335,10 +1334,10 @@ fragment SOURCE_DETAILS on SourceType {
   isConfigurable
   supportsLatest
 }`) as unknown as TypedDocumentString<UpdateExtensionMutation, UpdateExtensionMutationVariables>;
-export const UpdateMangasCategoriesDocument = new TypedDocumentString(`
-    mutation UpdateMangasCategories($mangaIds: [Int!]!, $patch: UpdateMangaCategoriesPatchInput!) {
-  updateMangasCategories(input: { ids: $mangaIds, patch: $patch }) {
-    mangas {
+export const UpdateMangaCategoriesDocument = new TypedDocumentString(`
+    mutation UpdateMangaCategories($mangaId: Int!, $patch: UpdateMangaCategoriesPatchInput!) {
+  updateMangaCategories(input: { id: $mangaId, patch: $patch }) {
+    manga {
       id
       categories {
         nodes {
@@ -1347,14 +1346,14 @@ export const UpdateMangasCategoriesDocument = new TypedDocumentString(`
       }
     }
   }
-  updateMangas(input: { ids: $mangaIds, patch: { inLibrary: true } }) {
-    mangas {
+  updateManga(input: { id: $mangaId, patch: { inLibrary: true } }) {
+    manga {
       id
       inLibrary
     }
   }
 }
-    `) as unknown as TypedDocumentString<UpdateMangasCategoriesMutation, UpdateMangasCategoriesMutationVariables>;
+    `) as unknown as TypedDocumentString<UpdateMangaCategoriesMutation, UpdateMangaCategoriesMutationVariables>;
 export const UpdateSourcePreferenceDocument = new TypedDocumentString(`
     mutation UpdateSourcePreference($sourceId: LongString!, $change: SourcePreferenceChangeInput!) {
   updateSourcePreference(input: { source: $sourceId, change: $change }) {

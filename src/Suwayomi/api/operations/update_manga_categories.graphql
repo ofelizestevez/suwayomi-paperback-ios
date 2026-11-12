@@ -1,0 +1,19 @@
+mutation UpdateMangaCategories($mangaId: Int!, $patch: UpdateMangaCategoriesPatchInput!) {
+	updateMangaCategories(input: { id: $mangaId, patch: $patch }) {
+		manga {
+			id
+			categories {
+				nodes {
+					id
+				}
+			}
+		}
+	}
+
+	updateManga(input: { id: $mangaId, patch: { inLibrary: true } }) {
+		manga {
+			id
+			inLibrary
+		}
+	}
+}

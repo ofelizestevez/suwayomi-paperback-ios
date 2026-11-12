@@ -6,7 +6,9 @@ import type {
 	ExtensionImpl,
 	Form,
 	ManagedCollection,
-	ManagedCollectionChangeset,
+	ManagedCollectionChange,
+	ManagedCollectionChangeFailure,
+	ManagedCollectionItems,
 	MangaProgress,
 	Metadata,
 	PagedResults,
@@ -20,7 +22,7 @@ import type {
 import { executeGraphQL } from './api/client';
 import {
 	LibraryCategoriesDocument,
-	LibraryCategoryMangaDocument,
+	LibraryCategoriesMangasDocument,
 	MangaDetailsDocument,
 	MangaChaptersDocument,
 	ChapterPagesDocument,
@@ -28,7 +30,8 @@ import {
 	MarkChapterReadDocument,
 	SearchSourceMangaDocument,
 	RefreshMangaDetailsDocument,
-	UpdateMangasCategoriesDocument,
+	UpdateMangaCategoriesDocument,
+	type UpdateMangaCategoriesMutationVariables,
 } from './api/generated/graphql';
 import { toChapter } from './api/mappers/chapter';
 import { toSourceManga } from './api/mappers/manga';
@@ -84,7 +87,7 @@ export class SuwayomiExtension implements ExtensionImpl<typeof SuwayomiExtension
 		return toSourceManga(manga, serverUrl);
 	}
 
-	async getManagedLibraryCollections(): Promise<ManagedCollection[]> {
+	async getManagedCollections(): Promise<ManagedCollection[]> {
 		const result = await executeGraphQL(config.serverUrl, LibraryCategoriesDocument);
 
 		return result.categories.nodes.map((category) => ({
@@ -93,51 +96,65 @@ export class SuwayomiExtension implements ExtensionImpl<typeof SuwayomiExtension
 		}));
 	}
 
-	async commitManagedCollectionChanges(changeset: ManagedCollectionChangeset): Promise<void> {
-		const serverUrl = config.serverUrl;
-
-		const categoryId = parseServerId(changeset.collection.id, 'category');
-		const additionIds = changeset.additions.map((manga) =>
-			parseServerId(manga.mangaId, 'manga'),
-		);
-		const deletionIds = changeset.deletions.map((manga) =>
-			parseServerId(manga.mangaId, 'manga'),
+	async getManagedCollectionItems(
+		collections: ManagedCollection[],
+	): Promise<ManagedCollectionItems[]> {
+		const categoryIds = collections.map((collection) =>
+			parseServerId(collection.id, 'category'),
 		);
 
-		if (additionIds.length > 0) {
-			await executeGraphQL(serverUrl, UpdateMangasCategoriesDocument, {
-				mangaIds: additionIds,
-				patch: { addToCategories: [categoryId] },
-			});
-		}
-
-		if (deletionIds.length > 0) {
-			await executeGraphQL(serverUrl, UpdateMangasCategoriesDocument, {
-				mangaIds: deletionIds,
-				patch: { removeFromCategories: [categoryId] },
-			});
-		}
-	}
-
-	async getSourceMangaInManagedCollection(
-		managedCollection: ManagedCollection,
-	): Promise<SourceManga[]> {
-		const categoryId = parseServerId(managedCollection.id, 'category');
-
 		const serverUrl = config.serverUrl;
-		const result = await executeGraphQL(serverUrl, LibraryCategoryMangaDocument, {
-			categoryId,
+		const result = await executeGraphQL(serverUrl, LibraryCategoriesMangasDocument, {
+			categoryIds,
 		});
 
-		const { nodes, totalCount, pageInfo } = result.category.mangas;
+		const items: ManagedCollectionItems[] = result.categories.nodes.map((category) => {
+			const mangaInSuwayomiLibrary = category.mangas.nodes.filter((manga) => manga.inLibrary);
 
-		if (pageInfo.hasNextPage || nodes.length < totalCount) {
-			throw new Error(`Incomplete category: received ${nodes.length} of ${totalCount} manga`);
+			const collectionItems: ManagedCollectionItems = {
+				collectionId: String(category.id),
+				items: mangaInSuwayomiLibrary.map((manga) => toSourceManga(manga, serverUrl)),
+			};
+
+			return collectionItems;
+		});
+
+		return items;
+	}
+
+	async applyManagedCollectionChanges(
+		changes: ManagedCollectionChange[],
+	): Promise<ManagedCollectionChangeFailure[]> {
+		const serverUrl = config.serverUrl;
+
+		const failures: ManagedCollectionChangeFailure[] = [];
+
+		for (const change of changes) {
+			try {
+				const mangaId = parseServerId(change.sourceManga.mangaId, 'manga');
+				const patch: UpdateMangaCategoriesMutationVariables['patch'] = {};
+
+				if (change.type !== 'add') {
+					patch.removeFromCategories = [parseServerId(change.from.id, 'category')];
+				}
+
+				if (change.type !== 'remove') {
+					patch.addToCategories = [parseServerId(change.to.id, 'category')];
+				}
+
+				await executeGraphQL(serverUrl, UpdateMangaCategoriesDocument, {
+					mangaId,
+					patch,
+				});
+			} catch (error) {
+				failures.push({
+					changeId: change.id,
+					reason: error instanceof Error ? error.message : String(error),
+				});
+			}
 		}
 
-		const mangaInSuwayomiLibrary = nodes.filter((manga) => manga.inLibrary);
-
-		return mangaInSuwayomiLibrary.map((manga) => toSourceManga(manga, serverUrl));
+		return failures;
 	}
 
 	async getChapters(sourceManga: SourceManga): Promise<Chapter[]> {
